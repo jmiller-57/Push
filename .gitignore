@@ -1,0 +1,14 @@
+# Node / frontend
+push-frontend/node_modules/
+push-frontend/dist/
+
+# Go build outputs
+push-backend/bin/
+push-backend/tmp/
+
+# OS
+.DS_Store
+
+# Environment files
+*.env
+*.env.local
