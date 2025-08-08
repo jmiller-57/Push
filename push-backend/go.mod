@@ -1,4 +1,4 @@
-module Push
+module github.com/jmiller-57/Push/push-backend
 
 go 1.24.2
 

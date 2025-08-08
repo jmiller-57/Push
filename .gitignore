@@ -1,14 +1,65 @@
-# Node / frontend
+# ============================
+# Global OS / Editor cruft
+# ============================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+*.log
+.vscode/
+.idea/
+
+# ============================
+# Node / Frontend (push-frontend)
+# ============================
 push-frontend/node_modules/
 push-frontend/dist/
+push-frontend/.vite/
+push-frontend/*.local
+push-frontend/*.env
+push-frontend/*.env.*.local
 
-# Go build outputs
+# Build outputs
+push-frontend/build/
+push-frontend/.cache/
+
+# ============================
+# Go / Backend (push-backend)
+# ============================
 push-backend/bin/
 push-backend/tmp/
+push-backend/*.log
 
-# OS
-.DS_Store
+# Go binary (if built at top level or backend folder)
+Push
+push-backend/Push
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# Environment files
+# Go test cache
+*.test
+*.out
+
+# Go coverage
+coverage.out
+
+# ============================
+# Environment / Secrets
+# ============================
 *.env
 *.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# ============================
+# Misc
+# ============================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
