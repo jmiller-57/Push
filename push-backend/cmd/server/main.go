@@ -1,51 +1,26 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/jmiller-57/Push/push-backend/internal/http/router"
 )
 
 func main() {
-	deck := NewDeck()
+	addr := getenv("ADDR", ":8080")
+	jwtSecret := getenv("JWT_SECRET", "dev-secret-change-me")
+	frontend := getenv("FRONTEND_ORIGIN", "http://localhost:5173")
 
-	hand := []Card{
-		deck[0],
-		deck[1],
-		deck[2],
-		deck[3],
-		deck[4],
-		deck[5],
-		deck[6],
-		deck[7],
-		deck[8],
-		deck[9],
-		deck[10],
-	}
+	r := router.New(jwtSecret, frontend)
+	log.Printf("listending on %s", addr)
+	log.Fatal(http.ListenAndServe(addr, r))
+}
 
-	fmt.Println("Hand:")
-	for _, card := range hand {
-		fmt.Printf("%s ", card.String())
+func getenv(k, def string) string {
+	if v:= os.Getenv(k); v != "" {
+		return v
 	}
-	fmt.Println()
-
-	books := FindBooks(hand)
-	fmt.Println("Books found in hand:")
-	for i, book := range books {
-		fmt.Printf("Book %d: ", i+1)
-		for _, card := range book {
-			fmt.Printf("%s ", card.String())
-		}
-		fmt.Println()
-	}
-	fmt.Println("Total books found:", len(books))
-
-	runs := FindRunsWithWilds(hand)
-	fmt.Println("Runs found in hand:")
-	for i, run := range runs {
-		fmt.Printf("Run %d: ", i+1)
-		for _, card := range run {
-			fmt.Printf("%s ", card.String())
-		}
-		fmt.Println()
-	}
-	fmt.Println("Total runs found:", len(runs))
-}	
+	return def
+}
