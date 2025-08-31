@@ -2,70 +2,71 @@ package gameplay_test
 
 import (
 	"testing"
-	"github.com/jmiller-57/Push/push-backend/gameplay"
+
+	"github.com/jmiller-57/Push/backend/gameplay"
 )
 
 func TestIsNaturalTwo(t *testing.T) {
 	// Define test cases
 	testCases := []struct {
-			name     string
-			Cards    []gameplay.Card
-			suit     gameplay.Suit
-			expected bool
+		name     string
+		Cards    []gameplay.Card
+		suit     gameplay.Suit
+		expected bool
 	}{
-			{
-				name: "Valid natural gameplay.Two sequence",
-				Cards: []gameplay.Card{
-						{Rank: gameplay.Two, Suit: gameplay.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-						{Rank: gameplay.Three, Suit: gameplay.Hearts, PossibleValues: []int8{3}},
-						{Rank: gameplay.Four, Suit: gameplay.Hearts, PossibleValues: []int8{4}},
-				},
-				suit:     gameplay.Hearts,
-				expected: true,
+		{
+			name: "Valid natural gameplay.Two sequence",
+			Cards: []gameplay.Card{
+				{Rank: gameplay.Two, Suit: gameplay.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: gameplay.Three, Suit: gameplay.Hearts, PossibleValues: []int8{3}},
+				{Rank: gameplay.Four, Suit: gameplay.Hearts, PossibleValues: []int8{4}},
 			},
-			{
-				name: "Valid natural gameplay.Two sequence",
-				Cards: []gameplay.Card{
-						{Rank: gameplay.Two, Suit: gameplay.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-						{Rank: gameplay.Joker, Suit: gameplay.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-						{Rank: gameplay.Four, Suit: gameplay.Hearts, PossibleValues: []int8{4}},
-				},
-				suit:     gameplay.Hearts,
-				expected: true,
+			suit:     gameplay.Hearts,
+			expected: true,
+		},
+		{
+			name: "Valid natural gameplay.Two sequence",
+			Cards: []gameplay.Card{
+				{Rank: gameplay.Two, Suit: gameplay.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: gameplay.Joker, Suit: gameplay.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: gameplay.Four, Suit: gameplay.Hearts, PossibleValues: []int8{4}},
 			},
-			{
-				name: "Invalid sequence with wrong suit",
-				Cards: []gameplay.Card{
-						{Rank: gameplay.Two, Suit: gameplay.Spades, PossibleValues: []int8{2}},
-						{Rank: gameplay.Three, Suit: gameplay.Hearts, PossibleValues: []int8{3}},
-						{Rank: gameplay.Four, Suit: gameplay.Hearts, PossibleValues: []int8{4}},
-				},
-				suit:     gameplay.Hearts,
-				expected: false,
+			suit:     gameplay.Hearts,
+			expected: true,
+		},
+		{
+			name: "Invalid sequence with wrong suit",
+			Cards: []gameplay.Card{
+				{Rank: gameplay.Two, Suit: gameplay.Spades, PossibleValues: []int8{2}},
+				{Rank: gameplay.Three, Suit: gameplay.Hearts, PossibleValues: []int8{3}},
+				{Rank: gameplay.Four, Suit: gameplay.Hearts, PossibleValues: []int8{4}},
 			},
-			{
-				name: "Invalid sequence wild gameplay.Card not acting as a natural gameplay.Two",
-				Cards: []gameplay.Card{
-						{Rank: gameplay.Two, Suit: gameplay.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-						{Rank: gameplay.Four, Suit: gameplay.Hearts, PossibleValues: []int8{4}},
-						{Rank: gameplay.Five, Suit: gameplay.Hearts, PossibleValues: []int8{5}},
-				},
-				suit:     gameplay.Hearts,
-				expected: false,
+			suit:     gameplay.Hearts,
+			expected: false,
+		},
+		{
+			name: "Invalid sequence wild gameplay.Card not acting as a natural gameplay.Two",
+			Cards: []gameplay.Card{
+				{Rank: gameplay.Two, Suit: gameplay.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: gameplay.Four, Suit: gameplay.Hearts, PossibleValues: []int8{4}},
+				{Rank: gameplay.Five, Suit: gameplay.Hearts, PossibleValues: []int8{5}},
 			},
+			suit:     gameplay.Hearts,
+			expected: false,
+		},
 	}
 
 	// Iterate over test cases
 	for _, tc := range testCases {
-			t.Run(tc.name, func(t *testing.T) {
-					// Act: Call the function
-					result := gameplay.IsNaturalTwo(tc.Cards, tc.suit)
+		t.Run(tc.name, func(t *testing.T) {
+			// Act: Call the function
+			result := gameplay.IsNaturalTwo(tc.Cards, tc.suit)
 
-					// Assert: Check the result
-					if result != tc.expected {
-							t.Errorf("Test %s failed: expected %v, got %v", tc.name, tc.expected, result)
-					}
-			})
+			// Assert: Check the result
+			if result != tc.expected {
+				t.Errorf("Test %s failed: expected %v, got %v", tc.name, tc.expected, result)
+			}
+		})
 	}
 }
 
@@ -564,7 +565,7 @@ func TestValidateBook(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing	.T) {
+		t.Run(tc.name, func(t *testing.T) {
 			result := gameplay.ValidateBook(tc.book)
 			if result != tc.expected {
 				t.Errorf("Test %s failed: expected %v, got %v", tc.name, tc.expected, result)

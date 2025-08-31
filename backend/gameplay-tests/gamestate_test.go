@@ -3,7 +3,7 @@ package gameplay_test
 import (
 	"testing"
 
-	"github.com/jmiller-57/Push/push-backend/gameplay"
+	"github.com/jmiller-57/Push/backend/gameplay"
 )
 
 var g gameplay.GameState

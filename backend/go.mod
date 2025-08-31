@@ -1,4 +1,4 @@
-module github.com/jmiller-57/Push/push-backend
+module github.com/jmiller-57/Push/backend
 
 go 1.24.2
 
