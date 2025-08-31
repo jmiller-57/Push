@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/jmiller-57/Push/push-backend/handlers"
 )
 
 type RoomHandler struct {
@@ -20,7 +19,7 @@ func NewRoomHandler(db *sql.DB) *RoomHandler {
 
 func (h *RoomHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
 	// Get User ID from claims, handle missing or wrong type
-	userID, err := handlers.GetUserIDFromContext(r)
+	userID, err := GetUserIDFromContext(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
@@ -51,7 +50,7 @@ func (h *RoomHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
 
 func (h *RoomHandler) JoinRoom(w http.ResponseWriter, r *http.Request) {
 	// Extract user claims from context
-	userID, err := handlers.GetUserIDFromContext(r)
+	userID, err := GetUserIDFromContext(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
