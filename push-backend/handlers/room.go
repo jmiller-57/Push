@@ -1,12 +1,13 @@
 package handlers
 
 import (
-    "database/sql"
-    "encoding/json"
-    "net/http"
-    "strconv"
+	"database/sql"
+	"encoding/json"
+	"net/http"
+	"strconv"
 
-    "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
+	"github.com/jmiller-57/Push/push-backend/handlers"
 )
 
 type RoomHandler struct {
@@ -18,47 +19,61 @@ func NewRoomHandler(db *sql.DB) *RoomHandler {
 }
 
 func (h *RoomHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
-    var req struct {
-        RoomName  string `json:"roomname"`
-        CreatorID int    `json:"creator_id"`
-    }
+	// Get User ID from claims, handle missing or wrong type
+	userID, err := handlers.GetUserIDFromContext(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	// Parse request body for room name
+	var req struct {
+		RoomName string `json:"roomname"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.RoomName == "" {
+		http.Error(w, "invalid request", http.StatusBadRequest)
+		return
+	}
 
-    if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.RoomName == "" {
-        http.Error(w, "invalid request", http.StatusBadRequest)
-        return
-    }
-
-    res, err := h.DB.Exec("INSERT INTO rooms (roomname, creator_id) VALUES (?, ?)", req.RoomName, req.CreatorID)
-    if err != nil {
-        http.Error(w, "could not create room", http.StatusInternalServerError)
-        return
-    }
-    id, _ := res.LastInsertId()
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(map[string]interface{}{
-        "id":         id,
-        "roomname":   req.RoomName,
-        "creator_id": req.CreatorID,
-    })
+	// Insert the room into the db, using the authenticated user's ID as creator
+	res, err := h.DB.Exec("INSERT INTO rooms (roomname, creator_id) VALUES (?, ?)", req.RoomName, int64(userID))
+	if err != nil {
+		http.Error(w, "could not create room", http.StatusInternalServerError)
+		return
+	}
+	roomId, _ := res.LastInsertId()
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"id":         roomId,
+		"roomname":   req.RoomName,
+		"creator_id": int64(userID),
+	})
 }
 
 func (h *RoomHandler) JoinRoom(w http.ResponseWriter, r *http.Request) {
-    var req struct {
-        RoomID int64 `json:"room_id"`
-        UserID int64 `json:"user_id"`
-    }
+	// Extract user claims from context
+	userID, err := handlers.GetUserIDFromContext(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 
-    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-        http.Error(w, "invalid request", http.StatusBadRequest)
-        return
-    }
+	// Parse request body for room ID only
+	var req struct {
+		RoomID int64 `json:"room_id"`
+	}
 
-    _, err := h.DB.Exec("INSERT INTO room_members (room_id, user_id) VALUES (?, ?)", req.RoomID, req.UserID)
-    if err != nil {
-        http.Error(w, "could not join room", http.StatusInternalServerError)
-        return
-    }
-    w.WriteHeader(http.StatusOK)
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid request", http.StatusBadRequest)
+		return
+	}
+
+	// Insert into room_members using authenticated user's ID
+	_, err = h.DB.Exec("INSERT INTO room_members (room_id, user_id) VALUES (?, ?)", req.RoomID, int64(userID))
+	if err != nil {
+		http.Error(w, "could not join room", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h *RoomHandler) ListRooms(w http.ResponseWriter, r *http.Request) {

@@ -20,8 +20,8 @@ func main() {
 	r.HandleFunc("/api/login", userHandler.Login).Methods("POST")
 	r.Handle("/api/rooms", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.CreateRoom))).Methods("POST")
 	r.Handle("/api/rooms/join", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.JoinRoom))).Methods("POST")
-	r.HandleFunc("/api/rooms/list", roomHandler.ListRooms).Methods("GET")
-	r.HandleFunc("/api/rooms/{id}", roomHandler.RoomDetails).Methods("GET")
+	r.Handle("/api/rooms/list", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.ListRooms))).Methods("GET")
+	r.Handle("/api/rooms/{id}", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.RoomDetails))).Methods("GET")
 
 	log.Println("Server started listening at :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
