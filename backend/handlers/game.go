@@ -28,6 +28,17 @@ func (h *GameHandler) StartGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var stateBytes []byte
+	err = h.DB.QueryRow("SELECT state FROM games WHERE room_id = ?", roomID).Scan(&stateBytes)
+	if err == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(stateBytes)
+		return
+	} else if err != sql.ErrNoRows {
+		http.Error(w, "error checking for existing game", http.StatusInternalServerError)
+		return
+	}
+
 	// Get room members
 	rows, err := h.DB.Query(`
 		SELECT u.username
@@ -57,7 +68,7 @@ func (h *GameHandler) StartGame(w http.ResponseWriter, r *http.Request) {
 
 	gameState := gameplay.NewGame(players)
 
-	stateBytes, err := json.Marshal(gameState)
+	stateBytes, err = json.Marshal(gameState)
 	if err != nil {
 		http.Error(w, "could not serialize game state", http.StatusInternalServerError)
 		return
@@ -85,6 +96,13 @@ func (h *GameHandler) GetGameState(w http.ResponseWriter, r *http.Request) {
 	var stateBytes []byte
 	err = h.DB.QueryRow("SELECT state FROM games WHERE room_id = ?", roomID).Scan(&stateBytes)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			// Game not started yet
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(`{"gameStarted": false}`))
+			return
+		}
 		http.Error(w, "could not get game state", http.StatusNotFound)
 		return
 	}

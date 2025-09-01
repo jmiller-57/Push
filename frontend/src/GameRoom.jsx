@@ -6,9 +6,11 @@ export default function GameRoom({ token }) {
   const { id } = useParams(); // room ID from URL
   const [room, setRoom] = useState(null);
   const [gameState, setGameState] = useState(null);
+  const [gameStarted, setGameStarted] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Fetch room details
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/lobby/rooms/${id}`, {
@@ -20,7 +22,12 @@ export default function GameRoom({ token }) {
       );
   }, [id, token]);
 
-  // Fetch game state
+  useEffect(() => {
+    fetchGameState();
+    // eslint-disable-next-line
+  }, [id, token]);
+
+  // Fetch game state on mount and after starting
   const fetchGameState = () => {
     setLoading(true);
     axios
@@ -28,39 +35,31 @@ export default function GameRoom({ token }) {
         headers: { Authorization: "Bearer " + token }
       })
       .then(res => {
-        setGameState(res.data);
-        console.log("Fetched game state: ", res.data);
+        if (res.data.gameStarted === false) {
+          setGameStarted(false);
+          setGameState(null);
+        } else {
+          setGameStarted(true);
+          setGameState(res.data);
+        }        
       })
       .catch(err => { 
-          if (err.response && err.response.status === 404) {
-            setGameState(null);
-          } else {
-            setError("Failed to load game state: " + (err.response?.data || err.message))
-          }
+          setError("Failed to load game state: " + (err.response?.data || err.message))
         })
       .finally(() => setLoading(false));
   };
-
-  useEffect(() => {
-    fetchGameState();
-  }, [id, token]);
-
-  useEffect(() => {
-    if (gameState) {
-      console.log("Updated gameState:", gameState);
-    }
-  }, [gameState]);
 
   const handleStartGame = async () => {
     setError("");
     setLoading(true);
     try {
-      await axios.post(
+      const res = await axios.post(
         `http://localhost:8080/api/lobby/rooms/${id}/start`,
         {},
         { headers: { Authorization: "Bearer " + token } }
       );
-      fetchGameState();
+      setGameStarted(true);
+      setGameState(res.data);
     } catch (err) {
       setError("Failed to start game: " + (err.response?.data || err.message));
     } finally {
@@ -82,13 +81,13 @@ export default function GameRoom({ token }) {
         ))}
       </ul>
       {/* Show start game button if at least 2 members and game not started */}
-      {!gameState && room.members.length >= 2 && (
+      {!gameStarted && room.members.length >= 2 && (
         <button onClick={handleStartGame} disabled={loading}>
           {loading ? "Starting..." : "Start Game"}
         </button>
       )}
       {/* Show game state if started */}
-      {gameState && (
+      {gameStarted && gameState && (
         <div>
           <h3>Game Started!</h3>
           <ul>
