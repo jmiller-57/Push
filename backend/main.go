@@ -8,6 +8,19 @@ import (
 	"github.com/jmiller-57/Push/backend/handlers"
 )
 
+func withCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	db := InitDB("push.db")
 	defer db.Close()
@@ -18,11 +31,12 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/api/users", userHandler.CreateUser).Methods("POST")
 	r.HandleFunc("/api/login", userHandler.Login).Methods("POST")
-	r.Handle("/api/rooms", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.CreateRoom))).Methods("POST")
-	r.Handle("/api/rooms/join", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.JoinRoom))).Methods("POST")
-	r.Handle("/api/rooms/list", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.ListRooms))).Methods("GET")
-	r.Handle("/api/rooms/{id}", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.RoomDetails))).Methods("GET")
+	r.Handle("/api/lobby", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.CreateRoom))).Methods("POST")
+	r.Handle("/api/lobby/rooms/join", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.JoinRoom))).Methods("POST")
+	r.Handle("/api/lobby/rooms/list", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.ListRooms))).Methods("GET")
+	r.Handle("/api/lobby/rooms/{id}", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.RoomDetails))).Methods("GET")
+	
 
 	log.Println("Server started listening at :8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", withCORS(r)))
 }

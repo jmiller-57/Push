@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/jmiller-57/Push/backend/gameplay"
+	"github.com/jmiller-57/Push/backend/gameplay/deck"
 )
 
 var g gameplay.GameState
@@ -95,145 +96,145 @@ func TestPlayRun(t *testing.T) {
 
 	testCase := []struct {
 		name        string
-		hand        []gameplay.Card // The player's hand
-		run         []gameplay.Card // The run to play
-		expectValid bool            // Whether the run is expected to be valid
+		hand        []deck.Card // The player's hand
+		run         []deck.Card // The run to play
+		expectValid bool        // Whether the run is expected to be valid
 	}{
 		{
-			name: "Valid run of gameplay.Four",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{3}},
-				{Rank: gameplay.Four, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{4}},
-				{Rank: gameplay.Five, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{5}},
-				{Rank: gameplay.Six, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{6}},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: gameplay.Seven, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{7}},
-				{Rank: gameplay.Eight, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{8}},
-				{Rank: gameplay.Nine, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{9}},
-				{Rank: gameplay.Ten, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{10}},
+			name: "Valid run of deck.Four",
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Spades, Points: 5, PossibleValues: []int8{3}},
+				{Rank: deck.Four, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{4}},
+				{Rank: deck.Five, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{5}},
+				{Rank: deck.Six, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{6}},
+				{Rank: deck.Joker, Suit: deck.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Seven, Suit: deck.Spades, Points: 5, PossibleValues: []int8{7}},
+				{Rank: deck.Eight, Suit: deck.Spades, Points: 5, PossibleValues: []int8{8}},
+				{Rank: deck.Nine, Suit: deck.Spades, Points: 5, PossibleValues: []int8{9}},
+				{Rank: deck.Ten, Suit: deck.Spades, Points: 10, PossibleValues: []int8{10}},
 			},
-			run: []gameplay.Card{
-				{Rank: gameplay.Four, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{4}},
-				{Rank: gameplay.Five, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{5}},
-				{Rank: gameplay.Six, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{6}},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-			},
-			expectValid: true,
-		},
-		{
-			name: "Valid run of gameplay.Five",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{3}},
-				{Rank: gameplay.Four, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{4}},
-				{Rank: gameplay.Five, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{5}},
-				{Rank: gameplay.Six, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{6}},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: gameplay.Seven, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{7}},
-				{Rank: gameplay.Eight, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{8}},
-				{Rank: gameplay.Nine, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{9}},
-				{Rank: gameplay.Ten, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{10}},
-				{Rank: gameplay.Jack, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{11}},
-			},
-			run: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{3}},
-				{Rank: gameplay.Four, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{4}},
-				{Rank: gameplay.Five, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{5}},
-				{Rank: gameplay.Six, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{6}},
-				{Rank: gameplay.Seven, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{7}},
+			run: []deck.Card{
+				{Rank: deck.Four, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{4}},
+				{Rank: deck.Five, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{5}},
+				{Rank: deck.Six, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{6}},
+				{Rank: deck.Joker, Suit: deck.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
 			},
 			expectValid: true,
 		},
 		{
-			name: "Valid run of gameplay.Six",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{3}},
-				{Rank: gameplay.Four, Suit: gameplay.Clubs, Points: 5, PossibleValues: []int8{4}},
-				{Rank: gameplay.Five, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{5}},
-				{Rank: gameplay.Six, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{6}},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: gameplay.Seven, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{7}},
-				{Rank: gameplay.Eight, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{8}},
-				{Rank: gameplay.Nine, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{9}},
-				{Rank: gameplay.Ten, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{10}},
-				{Rank: gameplay.Jack, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{11}},
-				{Rank: gameplay.Queen, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{12}},
+			name: "Valid run of deck.Five",
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{3}},
+				{Rank: deck.Four, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{4}},
+				{Rank: deck.Five, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{5}},
+				{Rank: deck.Six, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{6}},
+				{Rank: deck.Joker, Suit: deck.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Seven, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{7}},
+				{Rank: deck.Eight, Suit: deck.Spades, Points: 5, PossibleValues: []int8{8}},
+				{Rank: deck.Nine, Suit: deck.Spades, Points: 5, PossibleValues: []int8{9}},
+				{Rank: deck.Ten, Suit: deck.Spades, Points: 10, PossibleValues: []int8{10}},
+				{Rank: deck.Jack, Suit: deck.Spades, Points: 10, PossibleValues: []int8{11}},
 			},
-			run: []gameplay.Card{
-				{Rank: gameplay.Seven, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{7}},
-				{Rank: gameplay.Eight, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{8}},
-				{Rank: gameplay.Nine, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{9}},
-				{Rank: gameplay.Ten, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{10}},
-				{Rank: gameplay.Jack, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{11}},
-				{Rank: gameplay.Queen, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{12}},
+			run: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{3}},
+				{Rank: deck.Four, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{4}},
+				{Rank: deck.Five, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{5}},
+				{Rank: deck.Six, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{6}},
+				{Rank: deck.Seven, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{7}},
 			},
 			expectValid: true,
 		},
 		{
-			name: "Valid run of gameplay.Seven",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{3}},
-				{Rank: gameplay.Four, Suit: gameplay.Clubs, Points: 5, PossibleValues: []int8{4}},
-				{Rank: gameplay.Five, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{5}},
-				{Rank: gameplay.Six, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{6}},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: gameplay.Seven, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{7}},
-				{Rank: gameplay.Eight, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{8}},
-				{Rank: gameplay.Nine, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{9}},
-				{Rank: gameplay.Ten, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{10}},
-				{Rank: gameplay.Jack, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{11}},
-				{Rank: gameplay.Queen, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{12}},
-				{Rank: gameplay.King, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{13}},
+			name: "Valid run of deck.Six",
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Spades, Points: 5, PossibleValues: []int8{3}},
+				{Rank: deck.Four, Suit: deck.Clubs, Points: 5, PossibleValues: []int8{4}},
+				{Rank: deck.Five, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{5}},
+				{Rank: deck.Six, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{6}},
+				{Rank: deck.Joker, Suit: deck.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Seven, Suit: deck.Spades, Points: 5, PossibleValues: []int8{7}},
+				{Rank: deck.Eight, Suit: deck.Spades, Points: 5, PossibleValues: []int8{8}},
+				{Rank: deck.Nine, Suit: deck.Spades, Points: 5, PossibleValues: []int8{9}},
+				{Rank: deck.Ten, Suit: deck.Spades, Points: 10, PossibleValues: []int8{10}},
+				{Rank: deck.Jack, Suit: deck.Spades, Points: 10, PossibleValues: []int8{11}},
+				{Rank: deck.Queen, Suit: deck.Spades, Points: 10, PossibleValues: []int8{12}},
 			},
-			run: []gameplay.Card{
-				{Rank: gameplay.Seven, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{7}},
-				{Rank: gameplay.Eight, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{8}},
-				{Rank: gameplay.Nine, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{9}},
-				{Rank: gameplay.Ten, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{10}},
-				{Rank: gameplay.Jack, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{11}},
-				{Rank: gameplay.Queen, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{12}},
-				{Rank: gameplay.King, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{13}},
+			run: []deck.Card{
+				{Rank: deck.Seven, Suit: deck.Spades, Points: 5, PossibleValues: []int8{7}},
+				{Rank: deck.Eight, Suit: deck.Spades, Points: 5, PossibleValues: []int8{8}},
+				{Rank: deck.Nine, Suit: deck.Spades, Points: 5, PossibleValues: []int8{9}},
+				{Rank: deck.Ten, Suit: deck.Spades, Points: 10, PossibleValues: []int8{10}},
+				{Rank: deck.Jack, Suit: deck.Spades, Points: 10, PossibleValues: []int8{11}},
+				{Rank: deck.Queen, Suit: deck.Spades, Points: 10, PossibleValues: []int8{12}},
+			},
+			expectValid: true,
+		},
+		{
+			name: "Valid run of deck.Seven",
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Spades, Points: 5, PossibleValues: []int8{3}},
+				{Rank: deck.Four, Suit: deck.Clubs, Points: 5, PossibleValues: []int8{4}},
+				{Rank: deck.Five, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{5}},
+				{Rank: deck.Six, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{6}},
+				{Rank: deck.Joker, Suit: deck.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Seven, Suit: deck.Spades, Points: 5, PossibleValues: []int8{7}},
+				{Rank: deck.Eight, Suit: deck.Spades, Points: 5, PossibleValues: []int8{8}},
+				{Rank: deck.Nine, Suit: deck.Spades, Points: 5, PossibleValues: []int8{9}},
+				{Rank: deck.Ten, Suit: deck.Spades, Points: 10, PossibleValues: []int8{10}},
+				{Rank: deck.Jack, Suit: deck.Spades, Points: 10, PossibleValues: []int8{11}},
+				{Rank: deck.Queen, Suit: deck.Spades, Points: 10, PossibleValues: []int8{12}},
+				{Rank: deck.King, Suit: deck.Spades, Points: 10, PossibleValues: []int8{13}},
+			},
+			run: []deck.Card{
+				{Rank: deck.Seven, Suit: deck.Spades, Points: 5, PossibleValues: []int8{7}},
+				{Rank: deck.Eight, Suit: deck.Spades, Points: 5, PossibleValues: []int8{8}},
+				{Rank: deck.Nine, Suit: deck.Spades, Points: 5, PossibleValues: []int8{9}},
+				{Rank: deck.Ten, Suit: deck.Spades, Points: 10, PossibleValues: []int8{10}},
+				{Rank: deck.Jack, Suit: deck.Spades, Points: 10, PossibleValues: []int8{11}},
+				{Rank: deck.Queen, Suit: deck.Spades, Points: 10, PossibleValues: []int8{12}},
+				{Rank: deck.King, Suit: deck.Spades, Points: 10, PossibleValues: []int8{13}},
 			},
 			expectValid: true,
 		},
 		{
 			name: "Invalid run with non-consecutive ranks",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{3}},
-				{Rank: gameplay.Four, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{4}},
-				{Rank: gameplay.Five, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{5}},
-				{Rank: gameplay.Six, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{6}},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: gameplay.Seven, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{7}},
-				{Rank: gameplay.Eight, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{8}},
-				{Rank: gameplay.Nine, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{9}},
-				{Rank: gameplay.Ten, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{10}},
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Spades, Points: 5, PossibleValues: []int8{3}},
+				{Rank: deck.Four, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{4}},
+				{Rank: deck.Five, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{5}},
+				{Rank: deck.Six, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{6}},
+				{Rank: deck.Joker, Suit: deck.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Seven, Suit: deck.Spades, Points: 5, PossibleValues: []int8{7}},
+				{Rank: deck.Eight, Suit: deck.Spades, Points: 5, PossibleValues: []int8{8}},
+				{Rank: deck.Nine, Suit: deck.Spades, Points: 5, PossibleValues: []int8{9}},
+				{Rank: deck.Ten, Suit: deck.Spades, Points: 10, PossibleValues: []int8{10}},
 			},
-			run: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{3}},
-				{Rank: gameplay.Five, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{5}},
-				{Rank: gameplay.Six, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{6}},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+			run: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Spades, Points: 5, PossibleValues: []int8{3}},
+				{Rank: deck.Five, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{5}},
+				{Rank: deck.Six, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{6}},
+				{Rank: deck.Joker, Suit: deck.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
 			},
 			expectValid: false,
 		},
 		{
 			name: "Invalid run not long enough",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{3}},
-				{Rank: gameplay.Four, Suit: gameplay.Clubs, Points: 5, PossibleValues: []int8{4}},
-				{Rank: gameplay.Five, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{5}},
-				{Rank: gameplay.Six, Suit: gameplay.Hearts, Points: 5, PossibleValues: []int8{6}},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: gameplay.Seven, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{7}},
-				{Rank: gameplay.Eight, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{8}},
-				{Rank: gameplay.Nine, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{9}},
-				{Rank: gameplay.Ten, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{10}},
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Spades, Points: 5, PossibleValues: []int8{3}},
+				{Rank: deck.Four, Suit: deck.Clubs, Points: 5, PossibleValues: []int8{4}},
+				{Rank: deck.Five, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{5}},
+				{Rank: deck.Six, Suit: deck.Hearts, Points: 5, PossibleValues: []int8{6}},
+				{Rank: deck.Joker, Suit: deck.AnySuit, Points: 50, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Seven, Suit: deck.Spades, Points: 5, PossibleValues: []int8{7}},
+				{Rank: deck.Eight, Suit: deck.Spades, Points: 5, PossibleValues: []int8{8}},
+				{Rank: deck.Nine, Suit: deck.Spades, Points: 5, PossibleValues: []int8{9}},
+				{Rank: deck.Ten, Suit: deck.Spades, Points: 10, PossibleValues: []int8{10}},
 			},
-			run: []gameplay.Card{
-				{Rank: gameplay.Seven, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{7}},
-				{Rank: gameplay.Eight, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{8}},
-				{Rank: gameplay.Nine, Suit: gameplay.Spades, Points: 5, PossibleValues: []int8{9}},
-				{Rank: gameplay.Ten, Suit: gameplay.Spades, Points: 10, PossibleValues: []int8{10}},
+			run: []deck.Card{
+				{Rank: deck.Seven, Suit: deck.Spades, Points: 5, PossibleValues: []int8{7}},
+				{Rank: deck.Eight, Suit: deck.Spades, Points: 5, PossibleValues: []int8{8}},
+				{Rank: deck.Nine, Suit: deck.Spades, Points: 5, PossibleValues: []int8{9}},
+				{Rank: deck.Ten, Suit: deck.Spades, Points: 10, PossibleValues: []int8{10}},
 			},
 			expectValid: false,
 		},
@@ -297,80 +298,80 @@ func TestPlayBook(t *testing.T) {
 	// Define test cases
 	testCases := []struct {
 		name        string
-		hand        []gameplay.Card // The player's hand
-		book        []gameplay.Card // The book to play
-		expectValid bool            // Whether the book is expected to be valid
+		hand        []deck.Card // The player's hand
+		book        []deck.Card // The book to play
+		expectValid bool        // Whether the book is expected to be valid
 	}{
 		{
-			name: "Valid book with gameplay.Three cards of the same rank",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Three, Suit: gameplay.Spades},
-				{Rank: gameplay.Three, Suit: gameplay.Diamonds},
-				{Rank: gameplay.Four, Suit: gameplay.Clubs},
+			name: "Valid book with deck.Three cards of the same rank",
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Spades},
+				{Rank: deck.Three, Suit: deck.Diamonds},
+				{Rank: deck.Four, Suit: deck.Clubs},
 			},
-			book: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Three, Suit: gameplay.Spades},
-				{Rank: gameplay.Three, Suit: gameplay.Diamonds},
+			book: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Spades},
+				{Rank: deck.Three, Suit: deck.Diamonds},
 			},
 			expectValid: true,
 		},
 		{
 			name: "Invalid book with mixed ranks",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Four, Suit: gameplay.Spades},
-				{Rank: gameplay.Five, Suit: gameplay.Diamonds},
-				{Rank: gameplay.Six, Suit: gameplay.Clubs},
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Spades},
+				{Rank: deck.Five, Suit: deck.Diamonds},
+				{Rank: deck.Six, Suit: deck.Clubs},
 			},
-			book: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Four, Suit: gameplay.Spades},
-				{Rank: gameplay.Five, Suit: gameplay.Diamonds},
+			book: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Spades},
+				{Rank: deck.Five, Suit: deck.Diamonds},
 			},
 			expectValid: false,
 		},
 		{
-			name: "Invalid book with less than gameplay.Three cards",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Three, Suit: gameplay.Spades},
-				{Rank: gameplay.Four, Suit: gameplay.Diamonds},
+			name: "Invalid book with less than deck.Three cards",
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Spades},
+				{Rank: deck.Four, Suit: deck.Diamonds},
 			},
-			book: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Three, Suit: gameplay.Spades},
+			book: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Spades},
 			},
 			expectValid: false,
 		},
 		{
 			name: "Valid book with one wildcard",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Three, Suit: gameplay.Spades},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit},
-				{Rank: gameplay.Four, Suit: gameplay.Clubs},
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Spades},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Four, Suit: deck.Clubs},
 			},
-			book: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Three, Suit: gameplay.Spades},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit},
+			book: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Spades},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
 			},
 			expectValid: true,
 		},
 		{
-			name: "Invalid book with gameplay.Two wildcards",
-			hand: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit},
-				{Rank: gameplay.Four, Suit: gameplay.Clubs},
+			name: "Invalid book with deck.Two wildcards",
+			hand: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Four, Suit: deck.Clubs},
 			},
-			book: []gameplay.Card{
-				{Rank: gameplay.Three, Suit: gameplay.Hearts},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit},
-				{Rank: gameplay.Joker, Suit: gameplay.AnySuit},
+			book: []deck.Card{
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
 			},
 			expectValid: false,
 		},

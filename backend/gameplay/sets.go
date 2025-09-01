@@ -1,6 +1,10 @@
 package gameplay
 
-import "slices"
+import (
+	"slices"
+
+	"github.com/jmill-57/Push/backend/gameplay/deck"
+)
 
 type SetType string
 
@@ -15,13 +19,13 @@ type SetRequirement struct {
 }
 
 type Play struct {
-	Cards []Card
+	Cards []deck.Card
 	Set   SetRequirement
 }
 
-func FindBooks(hand []Card) [][]Card {
-	rankGroups := make(map[Rank][]Card)
-	var wildcards []Card
+func FindBooks(hand []deck.Card) [][]deck.Card {
+	rankGroups := make(map[deck.Rank][]deck.Card)
+	var wildcards []deck.Card
 
 	for _, card := range hand {
 		if card.IsWild() {
@@ -31,7 +35,7 @@ func FindBooks(hand []Card) [][]Card {
 		}
 	}
 
-	var books [][]Card
+	var books [][]deck.Card
 	usedWilds := 0
 
 	for _, group := range rankGroups {
@@ -39,7 +43,7 @@ func FindBooks(hand []Card) [][]Card {
 		if n >= 3 { // pure book
 			books = append(books, group)
 		} else if n == 2 && usedWilds < len(wildcards) {
-			book := append([]Card{}, group...)
+			book := append([]deck.Card{}, group...)
 			book = append(book, wildcards[usedWilds])
 			usedWilds++
 			books = append(books, book)
@@ -48,14 +52,14 @@ func FindBooks(hand []Card) [][]Card {
 	return books
 }
 
-func FindRunsWithWilds(hand []Card) [][]Card {
-	suitGroups := make(map[Suit][]Card)
-	var wilds []Card
-	var runs [][]Card
+func FindRunsWithWilds(hand []deck.Card) [][]deck.Card {
+	suitGroups := make(map[deck.Suit][]deck.Card)
+	var wilds []deck.Card
+	var runs [][]deck.Card
 
 	// Separate wildcards and group the rest by suit
 	for _, card := range hand {
-		if card.IsWild() && !(card.Rank == Two) {
+		if card.IsWild() && !(card.Rank == deck.Two) {
 			wilds = append(wilds, card)
 		} else {
 			suitGroups[card.Suit] = append(suitGroups[card.Suit], card)
@@ -63,11 +67,11 @@ func FindRunsWithWilds(hand []Card) [][]Card {
 	}
 
 	// Helper: is a card being used naturally (not counting as a wildcard)?
-	isNatural := func(card Card, suit Suit, value int8) bool {
+	isNatural := func(card deck.Card, suit deck.Suit, value int8) bool {
 		if !card.IsWild() {
 			return true
 		}
-		if card.Rank == Two && card.Suit == suit && value == 2 {
+		if card.Rank == deck.Two && card.Suit == suit && value == 2 {
 			return true // natural two
 		}
 		return false
@@ -75,8 +79,8 @@ func FindRunsWithWilds(hand []Card) [][]Card {
 
 	// Attempt runs in each suit
 	for suit, cards := range suitGroups {
-		// Build value → []Card lookup map
-		valToCards := make(map[int8][]Card)
+		// Build value → []deck.Card lookup map
+		valToCards := make(map[int8][]deck.Card)
 		for _, card := range cards {
 			for _, val := range card.PossibleValues {
 				valToCards[val] = append(valToCards[val], card)
@@ -91,13 +95,13 @@ func FindRunsWithWilds(hand []Card) [][]Card {
 					continue // no run past Ace high
 				}
 
-				var run []Card
+				var run []deck.Card
 				usedCardIDs := map[string]bool{}
 				wildCount := 0
 				wildIdx := 0
 
 				for val := int8(start); val <= int8(end); val++ {
-					var usedCard *Card
+					var usedCard *deck.Card
 					for _, cand := range valToCards[val] {
 						id := cand.String()
 						if !usedCardIDs[id] {
@@ -134,12 +138,12 @@ func FindRunsWithWilds(hand []Card) [][]Card {
 	return runs
 }
 
-func ValidateBook(book []Card) bool {
+func ValidateBook(book []deck.Card) bool {
 	if len(book) < 3 {
 		return false
 	}
 
-	var rank Rank
+	var rank deck.Rank
 
 	if !book[0].IsWild() {
 		rank = book[0].Rank
@@ -167,7 +171,7 @@ func ValidateBook(book []Card) bool {
 	return true
 }
 
-func ValidateRun(run []Card, suit Suit, length int8) bool {
+func ValidateRun(run []deck.Card, suit deck.Suit, length int8) bool {
 	if len(run) < 4 {
 		return false
 	}
@@ -186,7 +190,7 @@ func ValidateRun(run []Card, suit Suit, length int8) bool {
 		// run of length 4: 0, 1, 2,
 
 		if cardsAssesed < (len(run) - 1) {
-			if cardsAssesed < 2 && run[cardsAssesed].Rank == Two && IsNaturalTwo(run[cardsAssesed:], suit) {
+			if cardsAssesed < 2 && run[cardsAssesed].Rank == deck.Two && IsNaturalTwo(run[cardsAssesed:], suit) {
 				wildsUsed--
 			}
 
@@ -211,8 +215,8 @@ func ValidateRun(run []Card, suit Suit, length int8) bool {
 	return true
 }
 
-func IsNaturalTwo(cards []Card, suit Suit) bool {
-	return cards[0].Rank == Two && cards[0].Suit == suit &&
-		((cards[1].Rank == Three && cards[1].Suit == suit) ||
-			(cards[1].IsWild() && cards[2].Rank == Four && cards[2].Suit == suit))
+func IsNaturalTwo(cards []deck.Card, suit deck.Suit) bool {
+	return cards[0].Rank == deck.Two && cards[0].Suit == suit &&
+		((cards[1].Rank == deck.Three && cards[1].Suit == suit) ||
+			(cards[1].IsWild() && cards[2].Rank == deck.Four && cards[2].Suit == suit))
 }

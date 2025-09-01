@@ -1,4 +1,4 @@
-package gameplay
+package deck
 
 type Suit string
 type Rank string

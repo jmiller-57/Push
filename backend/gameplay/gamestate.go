@@ -1,12 +1,15 @@
 package gameplay
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+	"github.com/jmill-57/Push/backend/gameplay/deck"
+)
 
 type GameState struct {
 	Players        []Player
 	CurrentTurnIdx int
-	Deck           Deck
-	FaceUpCard     *Card
+	Deck           deck.Deck
+	FaceUpCard     *deck.Card
 	Round          RoundObjective
 	HasStarted     bool
 	HasEnded       bool
@@ -14,7 +17,7 @@ type GameState struct {
 }
 
 func (g *GameState) NewGame(playerNames []string) GameState {
-	deck := NewDeck()
+	deck := deck.NewDeck()
 
 	players := make([]Player, len(playerNames))
 	for i, name := range playerNames {
@@ -54,8 +57,8 @@ func (g *GameState) PushFaceUpCard() {
 	g.FaceUpCard = nil
 }
 
-func (g *GameState) Discard(card Card) {
-	g.RemoveCardsFromHand([]Card{card})
+func (g *GameState) Discard(card deck.Card) {
+	g.RemoveCardsFromHand([]deck.Card{card})
 	g.FaceUpCard = &card
 	g.AdvanceTurn()
 }
@@ -64,7 +67,7 @@ func (g *GameState) AdvanceTurn() {
 	g.CurrentTurnIdx = (g.CurrentTurnIdx + 1) % len(g.Players)
 }
 
-func (g *GameState) PlayBook(book []Card) {
+func (g *GameState) PlayBook(book []deck.Card) {
 	player := &g.Players[g.CurrentTurnIdx]
 	if ValidateBook(book) {
 		g.RemoveCardsFromHand(book)
@@ -80,7 +83,7 @@ func (g *GameState) PlayBook(book []Card) {
 	g.AdvanceTurn()
 }
 
-func (g *GameState) PlayRun(run []Card, suit Suit, length int8) {
+func (g *GameState) PlayRun(run []deck.Card, suit deck.Suit, length int8) {
 	if g.Round.RoundNumber == 1 ||
 		g.Round.RoundNumber == 3 {
 		panic("Runs cannot be played in rounds 1 or 3")
@@ -107,7 +110,7 @@ func (g *GameState) PlayRun(run []Card, suit Suit, length int8) {
 	g.AdvanceTurn()
 }
 
-func (g *GameState) RemoveCardsFromHand(cards []Card) {
+func (g *GameState) RemoveCardsFromHand(cards []deck.Card) {
 	player := &g.Players[g.CurrentTurnIdx]
 	for _, card := range cards {
 		for i, c := range player.Hand {

@@ -66,6 +66,17 @@ func (h *RoomHandler) JoinRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var count int
+	err = h.DB.QueryRow("SELECT COUNT(*) FROM room_members WHERE room_id = ? AND user_id = ?", req.RoomID, int64(userID)).Scan(&count)
+	if err != nil {
+		http.Error(w, "error checking membership", http.StatusInternalServerError)
+		return
+	}
+	if count > 0 {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	// Insert into room_members using authenticated user's ID
 	_, err = h.DB.Exec("INSERT INTO room_members (room_id, user_id) VALUES (?, ?)", req.RoomID, int64(userID))
 	if err != nil {

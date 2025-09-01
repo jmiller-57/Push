@@ -1,4 +1,4 @@
-package gameplay
+package deck
 
 import (
 	"math/rand"
