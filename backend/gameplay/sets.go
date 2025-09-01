@@ -3,7 +3,7 @@ package gameplay
 import (
 	"slices"
 
-	"github.com/jmill-57/Push/backend/gameplay/deck"
+	"github.com/jmiller-57/Push/backend/gameplay/deck"
 )
 
 type SetType string
@@ -82,7 +82,7 @@ func FindRunsWithWilds(hand []deck.Card) [][]deck.Card {
 		// Build value → []deck.Card lookup map
 		valToCards := make(map[int8][]deck.Card)
 		for _, card := range cards {
-			for _, val := range card.PossibleValues {
+			for _, val := range deck.ValuesFromRank(card) {
 				valToCards[val] = append(valToCards[val], card)
 			}
 		}
@@ -197,8 +197,8 @@ func ValidateRun(run []deck.Card, suit deck.Suit, length int8) bool {
 			next := run[cardsAssesed+1]
 
 			found := false
-			for _, curr := range card.PossibleValues {
-				if slices.Contains(next.PossibleValues, curr+1) {
+			for _, curr := range deck.ValuesFromRank(card) {
+				if slices.Contains(deck.ValuesFromRank(next), curr+1) {
 					// valid run sequence
 					found = true
 					break

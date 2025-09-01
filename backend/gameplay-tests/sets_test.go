@@ -3,7 +3,8 @@ package gameplay_test
 import (
 	"testing"
 
-	"github.com/jmill-57/Push/backend/gameplay/deck"
+	"github.com/jmiller-57/Push/backend/gameplay"
+	"github.com/jmiller-57/Push/backend/gameplay/deck"
 )
 
 func TestIsNaturalTwo(t *testing.T) {
@@ -17,9 +18,9 @@ func TestIsNaturalTwo(t *testing.T) {
 		{
 			name: "Valid natural deck.Two sequence",
 			Cards: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			expected: true,
@@ -27,9 +28,9 @@ func TestIsNaturalTwo(t *testing.T) {
 		{
 			name: "Valid natural deck.Two sequence",
 			Cards: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Joker, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			expected: true,
@@ -37,9 +38,9 @@ func TestIsNaturalTwo(t *testing.T) {
 		{
 			name: "Invalid sequence with wrong suit",
 			Cards: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{2}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
+				{Rank: deck.Two, Suit: deck.Spades},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			expected: false,
@@ -47,9 +48,9 @@ func TestIsNaturalTwo(t *testing.T) {
 		{
 			name: "Invalid sequence wild deck.Card not acting as a natural deck.Two",
 			Cards: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			expected: false,
@@ -60,7 +61,7 @@ func TestIsNaturalTwo(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			// Act: Call the function
-			result := deck.IsNaturalTwo(tc.Cards, tc.suit)
+			result := gameplay.IsNaturalTwo(tc.Cards, tc.suit)
 
 			// Assert: Check the result
 			if result != tc.expected {
@@ -83,10 +84,10 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Four with deck.Joker wild",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
 			},
 			suit:     deck.Hearts,
 			length:   4,
@@ -95,10 +96,10 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Four with deck.Two wild",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Spades},
 			},
 			suit:     deck.Hearts,
 			length:   4,
@@ -107,10 +108,10 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Four without wilds",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Six, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   4,
@@ -119,10 +120,10 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Four with natural deck.Two",
 			run: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   4,
@@ -131,10 +132,10 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Four with natural deck.Two in second position",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   4,
@@ -144,11 +145,11 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Five with deck.Joker wild",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Seven, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   5,
@@ -157,11 +158,11 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Five with wild deck.Two",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Spades},
+				{Rank: deck.Seven, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   5,
@@ -170,11 +171,11 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Five without wilds",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Six, Suit: deck.Hearts},
+				{Rank: deck.Seven, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   5,
@@ -183,11 +184,11 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Five with natural deck.Two",
 			run: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Six, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   5,
@@ -196,11 +197,11 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Five with natural deck.Two in second position",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   5,
@@ -210,12 +211,12 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Six with deck.Joker wild",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
-				{Rank: deck.Eight, Suit: deck.Hearts, PossibleValues: []int8{8}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Seven, Suit: deck.Hearts},
+				{Rank: deck.Eight, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -224,12 +225,12 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Six with wild deck.Two",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
-				{Rank: deck.Eight, Suit: deck.Hearts, PossibleValues: []int8{8}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Spades},
+				{Rank: deck.Seven, Suit: deck.Hearts},
+				{Rank: deck.Eight, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -238,12 +239,12 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Six without wilds",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
-				{Rank: deck.Eight, Suit: deck.Hearts, PossibleValues: []int8{8}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Six, Suit: deck.Hearts},
+				{Rank: deck.Seven, Suit: deck.Hearts},
+				{Rank: deck.Eight, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -252,12 +253,12 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Five with natural deck.Two",
 			run: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Six, Suit: deck.Hearts},
+				{Rank: deck.Seven, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -266,12 +267,12 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Six with natural deck.Two in second position",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Six, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -280,12 +281,12 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Six with natural deck.Two and one wild",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Six, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -294,12 +295,12 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Six with natural deck.Two and deck.Two wilds",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -308,12 +309,12 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Six with deck.Two wilds",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Spades},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Six, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -323,13 +324,13 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Seven with deck.Joker wild",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
-				{Rank: deck.Eight, Suit: deck.Hearts, PossibleValues: []int8{8}},
-				{Rank: deck.Nine, Suit: deck.Hearts, PossibleValues: []int8{9}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Seven, Suit: deck.Hearts},
+				{Rank: deck.Eight, Suit: deck.Hearts},
+				{Rank: deck.Nine, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -338,13 +339,13 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Seven with wild deck.Two",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
-				{Rank: deck.Eight, Suit: deck.Hearts, PossibleValues: []int8{8}},
-				{Rank: deck.Nine, Suit: deck.Hearts, PossibleValues: []int8{9}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Spades},
+				{Rank: deck.Seven, Suit: deck.Hearts},
+				{Rank: deck.Eight, Suit: deck.Hearts},
+				{Rank: deck.Nine, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   7,
@@ -353,13 +354,13 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Six without wilds",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
-				{Rank: deck.Eight, Suit: deck.Hearts, PossibleValues: []int8{8}},
-				{Rank: deck.Nine, Suit: deck.Hearts, PossibleValues: []int8{9}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Six, Suit: deck.Hearts},
+				{Rank: deck.Seven, Suit: deck.Hearts},
+				{Rank: deck.Eight, Suit: deck.Hearts},
+				{Rank: deck.Nine, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   7,
@@ -368,13 +369,13 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Six with natural deck.Two",
 			run: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
-				{Rank: deck.Eight, Suit: deck.Hearts, PossibleValues: []int8{8}},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Six, Suit: deck.Hearts},
+				{Rank: deck.Seven, Suit: deck.Hearts},
+				{Rank: deck.Eight, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -383,13 +384,13 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Seven with natural deck.Two in second position",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
+				{Rank: deck.Six, Suit: deck.Hearts},
+				{Rank: deck.Seven, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   7,
@@ -398,13 +399,13 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Seven with natural deck.Two and one wild",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Six, Suit: deck.Hearts},
+				{Rank: deck.Seven, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   7,
@@ -413,13 +414,13 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Seven with natural deck.Two and deck.Two wilds",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Seven, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   7,
@@ -428,13 +429,13 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Seven with deck.Two wilds",
 			run: []deck.Card{
-				{Rank: deck.Ace, Suit: deck.Hearts, PossibleValues: []int8{1, 14}},
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
+				{Rank: deck.Ace, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Spades},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Six, Suit: deck.Hearts},
+				{Rank: deck.Seven, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   7,
@@ -443,13 +444,13 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Valid run of deck.Seven with deck.Two wilds and natural deck.Two",
 			run: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Two, Suit: deck.Hearts, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
-				{Rank: deck.Seven, Suit: deck.Hearts, PossibleValues: []int8{7}},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Hearts},
+				{Rank: deck.Two, Suit: deck.Spades},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Six, Suit: deck.Hearts},
+				{Rank: deck.Seven, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   7,
@@ -459,9 +460,9 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Invalid run not enough Cards",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Hearts, PossibleValues: []int8{5}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   3,
@@ -470,10 +471,10 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Invalid run wrong suited deck.Card",
 			run: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Spades, PossibleValues: []int8{5}},
-				{Rank: deck.Six, Suit: deck.Hearts, PossibleValues: []int8{6}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Spades},
+				{Rank: deck.Six, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   4,
@@ -482,10 +483,10 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Invalid too many wilds",
 			run: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Spades, PossibleValues: []int8{5}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Two, Suit: deck.Spades},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Spades},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
 			},
 			suit:     deck.Hearts,
 			length:   4,
@@ -494,12 +495,12 @@ func TestValidateRun(t *testing.T) {
 		{
 			name: "Invalid run of 6 too many wilds",
 			run: []deck.Card{
-				{Rank: deck.Two, Suit: deck.Spades, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Four, Suit: deck.Hearts, PossibleValues: []int8{4}},
-				{Rank: deck.Five, Suit: deck.Spades, PossibleValues: []int8{5}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
-				{Rank: deck.Eight, Suit: deck.Hearts, PossibleValues: []int8{8}},
+				{Rank: deck.Two, Suit: deck.Spades},
+				{Rank: deck.Four, Suit: deck.Hearts},
+				{Rank: deck.Five, Suit: deck.Spades},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
+				{Rank: deck.Eight, Suit: deck.Hearts},
 			},
 			suit:     deck.Hearts,
 			length:   6,
@@ -509,7 +510,7 @@ func TestValidateRun(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := deck.ValidateRun(tc.run, tc.suit, tc.length)
+			result := gameplay.ValidateRun(tc.run, tc.suit, tc.length)
 			if result != tc.expected {
 				t.Errorf("Test %s failed: expected %v, got %v", tc.name, tc.expected, result)
 			}
@@ -527,28 +528,28 @@ func TestValidateBook(t *testing.T) {
 		{
 			name: "Valid book with deck.Joker wild",
 			book: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Three, Suit: deck.Diamonds, PossibleValues: []int8{3}},
-				{Rank: deck.Joker, Suit: deck.AnySuit, PossibleValues: []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Diamonds},
+				{Rank: deck.Joker, Suit: deck.AnySuit},
 			},
 			expected: true,
 		},
 		{
 			name: "Valid book with no wilds",
 			book: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Three, Suit: deck.Diamonds, PossibleValues: []int8{3}},
-				{Rank: deck.Three, Suit: deck.Clubs, PossibleValues: []int8{3}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Diamonds},
+				{Rank: deck.Three, Suit: deck.Clubs},
 			},
 			expected: true,
 		},
 		{
 			name: "Valid book of deck.Four without wilds",
 			book: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Hearts, PossibleValues: []int8{3}},
-				{Rank: deck.Three, Suit: deck.Diamonds, PossibleValues: []int8{3}},
-				{Rank: deck.Three, Suit: deck.Clubs, PossibleValues: []int8{3}},
-				{Rank: deck.Three, Suit: deck.Spades, PossibleValues: []int8{3}},
+				{Rank: deck.Three, Suit: deck.Hearts},
+				{Rank: deck.Three, Suit: deck.Diamonds},
+				{Rank: deck.Three, Suit: deck.Clubs},
+				{Rank: deck.Three, Suit: deck.Spades},
 			},
 			expected: true,
 		},
@@ -556,9 +557,9 @@ func TestValidateBook(t *testing.T) {
 		{
 			name: "Invalid book without wilds",
 			book: []deck.Card{
-				{Rank: deck.Three, Suit: deck.Diamonds, PossibleValues: []int8{3}},
-				{Rank: deck.Three, Suit: deck.Clubs, PossibleValues: []int8{3}},
-				{Rank: deck.Four, Suit: deck.Spades, PossibleValues: []int8{4}},
+				{Rank: deck.Three, Suit: deck.Diamonds},
+				{Rank: deck.Three, Suit: deck.Clubs},
+				{Rank: deck.Four, Suit: deck.Spades},
 			},
 			expected: false,
 		},
@@ -566,7 +567,7 @@ func TestValidateBook(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := deck.ValidateBook(tc.book)
+			result := gameplay.ValidateBook(tc.book)
 			if result != tc.expected {
 				t.Errorf("Test %s failed: expected %v, got %v", tc.name, tc.expected, result)
 			}

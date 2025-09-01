@@ -1,8 +1,7 @@
 package gameplay
 
 import (
-	"github.com/google/uuid"
-	"github.com/jmill-57/Push/backend/gameplay/deck"
+	"github.com/jmiller-57/Push/backend/gameplay/deck"
 )
 
 type GameState struct {
@@ -13,17 +12,17 @@ type GameState struct {
 	Round          RoundObjective
 	HasStarted     bool
 	HasEnded       bool
-	DownedSets     map[PlayerID][]Play // Tracks sets played by each player
+	DownedSets     map[string][]Play // Tracks sets played by each player
 }
 
-func (g *GameState) NewGame(playerNames []string) GameState {
+func NewGame(playerNames []string) GameState {
 	deck := deck.NewDeck()
 
 	players := make([]Player, len(playerNames))
 	for i, name := range playerNames {
 		hand := deck[:11]
 		deck = deck[11:]
-		players[i] = Player{ID: PlayerID(uuid.New()), Name: name, Hand: hand}
+		players[i] = Player{Name: name, Hand: hand}
 	}
 
 	faceUp := deck[0]
@@ -36,7 +35,7 @@ func (g *GameState) NewGame(playerNames []string) GameState {
 		FaceUpCard:     &faceUp,
 		Round:          RoundObjectives[0],
 		HasStarted:     true,
-		DownedSets:     make(map[PlayerID][]Play),
+		DownedSets:     make(map[string][]Play),
 	}
 }
 
@@ -71,7 +70,7 @@ func (g *GameState) PlayBook(book []deck.Card) {
 	player := &g.Players[g.CurrentTurnIdx]
 	if ValidateBook(book) {
 		g.RemoveCardsFromHand(book)
-		g.DownedSets[player.ID] = append(g.DownedSets[player.ID],
+		g.DownedSets[player.Name] = append(g.DownedSets[player.Name],
 			Play{
 				Cards: book,
 				Set: SetRequirement{
@@ -98,7 +97,7 @@ func (g *GameState) PlayRun(run []deck.Card, suit deck.Suit, length int8) {
 	player := &g.Players[g.CurrentTurnIdx]
 	if ValidateRun(run, suit, length) {
 		g.RemoveCardsFromHand(run)
-		g.DownedSets[player.ID] = append(g.DownedSets[player.ID],
+		g.DownedSets[player.Name] = append(g.DownedSets[player.Name],
 			Play{
 				Cards: run,
 				Set: SetRequirement{

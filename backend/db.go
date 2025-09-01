@@ -31,6 +31,10 @@ func InitDB(path string) *sql.DB {
 			FOREIGN KEY (room_id) REFERENCES rooms(id),
 			FOREIGN KEY (user_id) REFERENCES users(id)
 		);
+		CREATE TABLE IF NOT EXISTS games (
+			room_id INTEGER PRIMARY KEY,
+			state TEXT NOT NULL
+		)
 	`)
 	if err != nil {
 		log.Fatalf("failed to migrate db: %v", err)

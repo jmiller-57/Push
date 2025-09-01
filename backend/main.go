@@ -27,6 +27,7 @@ func main() {
 
 	userHandler := handlers.NewUserHandler(db)
 	roomHandler := handlers.NewRoomHandler(db)
+	gameHandler := handlers.NewGameHandler(db)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/api/users", userHandler.CreateUser).Methods("POST")
@@ -35,7 +36,7 @@ func main() {
 	r.Handle("/api/lobby/rooms/join", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.JoinRoom))).Methods("POST")
 	r.Handle("/api/lobby/rooms/list", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.ListRooms))).Methods("GET")
 	r.Handle("/api/lobby/rooms/{id}", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.RoomDetails))).Methods("GET")
-	
+	r.Handle("/api/lobby/rooms/{id}/start", handlers.JWTAuthMiddleware(http.HandlerFunc(gameHandler.StartGame))).Methods("POST")
 
 	log.Println("Server started listening at :8080")
 	log.Fatal(http.ListenAndServe(":8080", withCORS(r)))

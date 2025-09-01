@@ -32,7 +32,6 @@ type Card struct {
 	Rank           Rank
 	Suit           Suit
 	Points         int8
-	PossibleValues []int8
 }
 
 func NewCard(suit Suit, rank Rank) Card {
@@ -40,7 +39,6 @@ func NewCard(suit Suit, rank Rank) Card {
 		Suit:           suit,
 		Rank:           rank,
 		Points:         pointsFromRank(rank),
-		PossibleValues: valuesFromRank(rank),
 	}
 }
 
@@ -59,8 +57,8 @@ func pointsFromRank(rank Rank) int8 {
 	}
 }
 
-func valuesFromRank(rank Rank) []int8 {
-	switch rank {
+func ValuesFromRank(card Card) []int8 {
+	switch card.Rank {
 	case Ace:
 		return []int8{1, 14}
 	case Three:
