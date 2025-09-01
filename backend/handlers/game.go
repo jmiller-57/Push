@@ -72,3 +72,23 @@ func (h *GameHandler) StartGame(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(stateBytes)
 }
+
+func (h *GameHandler) GetGameState(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	roomIDStr := vars["id"]
+	roomID, err := strconv.ParseInt(roomIDStr, 10, 64)
+	if err != nil {
+		http.Error(w, "invalid room id", http.StatusBadRequest)
+		return
+	}
+
+	var stateBytes []byte
+	err = h.DB.QueryRow("SELECT state FROM games WHERE room_id = ?", roomID).Scan(&stateBytes)
+	if err != nil {
+		http.Error(w, "could not get game state", http.StatusNotFound)
+		return
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(stateBytes)
+}

@@ -40,7 +40,7 @@ export default function Lobby({ token }) {
     setError("");
     try {
       await axios.post(
-        "http://localhost:8080/api/lobby/rooms",
+        "http://localhost:8080/api/lobby",
         { roomname: roomName },
         { headers: { Authorization: "Bearer " + token } }
       );
