@@ -9,8 +9,10 @@ import (
 
 var g gameplay.GameState
 
+
+
 func TestStartGame(t *testing.T) {
-	playerNames := []string{"Alice", "Bob", "Charlie"}
+	playerNames := []gameplay.Player{{ID: 1, Name: "Alice"}, {ID: 2, Name: "Bob"}, {ID: 3, Name: "Charlie"}}
 	game := gameplay.NewGame(playerNames)
 
 	// Assert: Check initial game state
@@ -32,7 +34,7 @@ func TestStartGame(t *testing.T) {
 }
 
 func TestTakeFaceUpCard(t *testing.T) {
-	playerNames := []string{"Alice", "Bob"}
+	playerNames := []gameplay.Player{{ID: 1, Name: "Alice"}, {ID: 2, Name: "Bob"}}
 	game := gameplay.NewGame(playerNames)
 
 	// Act: Current player takes the face-up card
@@ -49,7 +51,7 @@ func TestTakeFaceUpCard(t *testing.T) {
 }
 
 func TestPushFaceUpCard(t *testing.T) {
-	playerNames := []string{"Alice", "Bob"}
+	playerNames := []gameplay.Player{{ID: 1, Name: "Alice"}, {ID: 2, Name: "Bob"}}
 	game := gameplay.NewGame(playerNames)
 
 	// Act: Current player pushes the face-up card
@@ -70,7 +72,7 @@ func TestPushFaceUpCard(t *testing.T) {
 }
 
 func TestDiscard(t *testing.T) {
-	playerNames := []string{"Alice", "Bob"}
+	playerNames := []gameplay.Player{{ID: 1, Name: "Alice"}, {ID: 2, Name: "Bob"}}
 	game := gameplay.NewGame(playerNames)
 	game.FaceUpCard = nil
 
@@ -91,7 +93,7 @@ func TestDiscard(t *testing.T) {
 }
 
 func TestPlayRun(t *testing.T) {
-	playerNames := []string{"Alice", "Bob"}
+	playerNames := []gameplay.Player{{ID: 1, Name: "Alice"}, {ID: 2, Name: "Bob"}}
 	game := gameplay.NewGame(playerNames)
 
 	testCase := []struct {
@@ -292,7 +294,7 @@ func TestPlayRun(t *testing.T) {
 }
 
 func TestPlayBook(t *testing.T) {
-	playerNames := []string{"Alice", "Bob"}
+	playerNames := []gameplay.Player{{ID: 1, Name: "Alice"}, {ID: 2, Name: "Bob"}}
 	game := gameplay.NewGame(playerNames)
 
 	// Define test cases

@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -63,6 +64,10 @@ func (h *RoomHandler) JoinRoom(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid request", http.StatusBadRequest)
+		return
+	}
+	if gameStarted(h.DB, req.RoomID) {
+		http.Error(w, "Cannot join a room where game play has started", http.StatusBadRequest)
 		return
 	}
 
@@ -167,7 +172,7 @@ func (h *RoomHandler) RoomDetails(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Respond with room info and members
-	resp := map[string]interface{}{
+	resp := map[string]any{
 		"id":      room.ID,
 		"name":    room.RoomName,
 		"creator": creatorStr,
@@ -175,4 +180,10 @@ func (h *RoomHandler) RoomDetails(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resp)
+}
+
+func gameStarted(db *sql.DB, roomId int64) bool {
+	var stateBytes []byte
+	err := db.QueryRow("SELECT room_id FROM games WHERE room_id = ?", roomId).Scan(&stateBytes)
+	return !errors.Is(err, sql.ErrNoRows)
 }

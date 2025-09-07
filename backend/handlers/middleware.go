@@ -43,7 +43,7 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func UserContextKey() interface{} {
+func UserContextKey() any {
 	return userContextKey
 }
 

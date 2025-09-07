@@ -93,12 +93,19 @@ export default function GameRoom({ token }) {
           <ul>
             {gameState.Players.map((player, idx) => (
               <li key={idx}>
-                {player.Name} (Score: {player.Score})
-                <br/>
-                Hand: {player.Hand.map(card => card.Rank + card.Suit).join(", ")}
+                {player.Name} (Cards: {player.Count})
+                {player.Hand && (
+                  <>
+                    <br />
+                    My Hand: {player.Hand.map(card => card.Rank + card.Suit).join(", ")}
+                  </>
+                )}
               </li>
             ))}
           </ul>
+          <div>
+            Face up card: {gameState.FaceUpCard.Rank}{gameState.FaceUpCard.Suit}
+          </div>
         </div>
       )}
     </div>

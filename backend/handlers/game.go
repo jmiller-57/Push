@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jmiller-57/Push/backend/gameplay"
+	"github.com/jmiller-57/Push/backend/gameplay/deck"
 )
 
 type GameHandler struct {
@@ -41,7 +42,7 @@ func (h *GameHandler) StartGame(w http.ResponseWriter, r *http.Request) {
 
 	// Get room members
 	rows, err := h.DB.Query(`
-		SELECT u.username
+		SELECT u.username, u.id
 		FROM room_members rm
 		JOIN users u
 		ON u.id = rm.user_id
@@ -52,14 +53,16 @@ func (h *GameHandler) StartGame(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	var players []string
+	var players []gameplay.Player
+
 	for rows.Next() {
 		var username string
-		if err := rows.Scan(&username); err != nil {
+		var userId int64
+		if err := rows.Scan(&username, &userId); err != nil {
 			http.Error(w, "error reading members", http.StatusInternalServerError)
 			return
 		}
-		players = append(players, username)
+		players = append(players,  gameplay.Player{ID: userId, Name: username})
 	}
 	if len(players) < 2 {
 		http.Error(w, "need at least 2 players to start", http.StatusBadRequest)
@@ -80,8 +83,7 @@ func (h *GameHandler) StartGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(stateBytes)
+	h.GetGameState(w, r)
 }
 
 func (h *GameHandler) GetGameState(w http.ResponseWriter, r *http.Request) {
@@ -106,7 +108,52 @@ func (h *GameHandler) GetGameState(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "could not get game state", http.StatusNotFound)
 		return
 	}
-	
+
+	userId, err := GetUserIDFromContext(r)
+	if err != nil {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	var gameState gameplay.GameState
+	if err := json.Unmarshal(stateBytes, &gameState); err != nil {
+		http.Error(w, "could not parse game state", http.StatusInternalServerError)
+		return
+	}
+
+	type PlayerView struct {
+		ID    int64       `json:"ID"`
+		Name  string      `json:"Name"`
+		Hand  []deck.Card `json:"Hand,omitempty"`
+		Count int         `json:"Count"`
+	}
+
+	var playersView []PlayerView
+	for _, player := range gameState.Players {
+		if player.ID == userId {
+			playersView = append(playersView, PlayerView{
+				ID:    player.ID,
+				Name:  player.Name,
+				Hand:  player.Hand,
+				Count: len(player.Hand),
+			})
+		} else {
+			playersView = append(playersView, PlayerView{
+				ID:    player.ID,
+				Name:  player.Name,
+				Count: len(player.Hand),
+			})
+		}
+	}
+
+	resp := struct {
+		Players    []PlayerView `json:"Players"`
+		FaceUpCard deck.Card    `json:"FaceUpCard"`
+	}{
+		Players:    playersView,
+		FaceUpCard: *gameState.FaceUpCard,
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(stateBytes)
+	json.NewEncoder(w).Encode(resp)
 }

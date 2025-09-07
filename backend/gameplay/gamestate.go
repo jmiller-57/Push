@@ -15,14 +15,13 @@ type GameState struct {
 	DownedSets     map[string][]Play // Tracks sets played by each player
 }
 
-func NewGame(playerNames []string) GameState {
+func NewGame(players []Player) GameState {
 	deck := deck.NewDeck()
 
-	players := make([]Player, len(playerNames))
-	for i, name := range playerNames {
+	for i := range players {
 		hand := deck[:11]
 		deck = deck[11:]
-		players[i] = Player{Name: name, Hand: hand}
+		players[i].Hand = hand
 	}
 
 	faceUp := deck[0]
