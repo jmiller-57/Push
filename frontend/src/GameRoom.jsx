@@ -11,6 +11,7 @@ export default function GameRoom({ token }) {
   const [gameStarted, setGameStarted] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [hoverdCardIdx, setHoveredCardIdx] = useState(null);
 
   // Fetch room details
   useEffect(() => {
@@ -109,15 +110,23 @@ export default function GameRoom({ token }) {
                     {player.Hand.map((card, idx) => {
                       const cardKey = suitRankMap[card.Rank + card.Suit];
                       const CardComponent = deck[cardKey];
+                      const isHovered = hoverdCardIdx === idx;
                       return CardComponent ? (
                         <div
                           key={idx}
                           style={{
                             marginLeft: idx === 0 ? 0 : `-${CARD_OVERLAP}px`,
-                            zIndex: idx, // ensures cards stack in order
+                            zIndex: isHovered ? 100 : idx,
                             position: "relative",
                             flexShrink: 0,
+                            transition: "z-index 0.1s, box-shadow 0.1s, border 0.1s",
+                            boxShadow: isHovered ? "0 4px 16px rgba(0, 123, 255, 0.3)" : undefined,
+                            border: isHovered ? "2px solid #007bff" : "2px solid transparent",
+                            borderRadius: "8px",
+                            cursor: "pointer"
                           }}
+                          onMouseEnter={() => setHoveredCardIdx(idx)}
+                          onMouseLeave={() => setHoveredCardIdx(null)}
                         >
                           <CardComponent  />
                         </div>
