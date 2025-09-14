@@ -62,7 +62,7 @@ func (h *GameHandler) StartGame(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "error reading members", http.StatusInternalServerError)
 			return
 		}
-		players = append(players,  gameplay.Player{ID: userId, Name: username})
+		players = append(players, gameplay.Player{ID: userId, Name: username})
 	}
 	if len(players) < 2 {
 		http.Error(w, "need at least 2 players to start", http.StatusBadRequest)
@@ -122,26 +122,26 @@ func (h *GameHandler) GetGameState(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type PlayerView struct {
-		ID    int64       `json:"ID"`
-		Name  string      `json:"Name"`
-		Hand  []deck.Card `json:"Hand,omitempty"`
-		Count int         `json:"Count"`
+		ID        int64       `json:"ID"`
+		Name      string      `json:"Name"`
+		Hand      []deck.Card `json:"Hand,omitempty"`
+		HandCount int         `json:"HandCount"`
 	}
 
 	var playersView []PlayerView
 	for _, player := range gameState.Players {
 		if player.ID == userId {
 			playersView = append(playersView, PlayerView{
-				ID:    player.ID,
-				Name:  player.Name,
-				Hand:  player.Hand,
-				Count: len(player.Hand),
+				ID:        player.ID,
+				Name:      player.Name,
+				Hand:      player.Hand,
+				HandCount: len(player.Hand),
 			})
 		} else {
 			playersView = append(playersView, PlayerView{
-				ID:    player.ID,
-				Name:  player.Name,
-				Count: len(player.Hand),
+				ID:        player.ID,
+				Name:      player.Name,
+				HandCount: len(player.Hand),
 			})
 		}
 	}
@@ -149,9 +149,11 @@ func (h *GameHandler) GetGameState(w http.ResponseWriter, r *http.Request) {
 	resp := struct {
 		Players    []PlayerView `json:"Players"`
 		FaceUpCard deck.Card    `json:"FaceUpCard"`
+		DeckCount  int          `json:"DeckCount"`
 	}{
 		Players:    playersView,
 		FaceUpCard: *gameState.FaceUpCard,
+		DeckCount:  len(gameState.Deck),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
