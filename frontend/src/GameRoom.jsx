@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import * as deck from "@letele/playing-cards";
-import { suitRankMap, CARD_HEIGHT, CARD_WIDTH, CARD_OVERLAP } from "./cardUtils";
+import { useDrag, useDrop } from "react-dnd";
+import PlayerHand from "./components/PlayerHand";
+import DeckStack from "./components/DeckStack";
+import FaceUpCard from "./components/FaceUpCard";
+import { CARD_HEIGHT } from "./cardUtils";
 
 export default function GameRoom({ token }) {
   const { id } = useParams(); // room ID from URL
@@ -12,6 +15,7 @@ export default function GameRoom({ token }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [hoverdCardIdx, setHoveredCardIdx] = useState(null);
+  const [hand, setHand] = useState([]);
 
   // Fetch room details
   useEffect(() => {
@@ -29,6 +33,13 @@ export default function GameRoom({ token }) {
     fetchGameState();
     // eslint-disable-next-line
   }, [id, token]);
+
+  useEffect(() => {
+    if (gameState && gameState.Players) {
+      const me = gameState.Players.find(p => p.Hand);
+      if (me) setHand(me.Hand);
+    }
+  }, [gameState]);
 
   // Fetch game state on mount and after starting
   const fetchGameState = () => {
@@ -98,43 +109,12 @@ export default function GameRoom({ token }) {
               <div key={idx} style={{ marginBottom: "32px" }}>
                 {player.Name} (Cards: {player.HandCount})
                 {player.Hand && (
-                  <div 
-                    style={{ 
-                      display: "flex",
-                      alignItems: "center",
-                      marginTop: "8px",
-                      height: `${CARD_HEIGHT}px`,
-                      position: "relative"
-                    }}
-                  >
-                    {player.Hand.map((card, idx) => {
-                      const cardKey = suitRankMap[card.Rank + card.Suit];
-                      const CardComponent = deck[cardKey];
-                      const isHovered = hoverdCardIdx === idx;
-                      return CardComponent ? (
-                        <div
-                          key={idx}
-                          style={{
-                            marginLeft: idx === 0 ? 0 : `-${CARD_OVERLAP}px`,
-                            zIndex: isHovered ? 100 : idx,
-                            position: "relative",
-                            flexShrink: 0,
-                            transition: "z-index 0.1s, box-shadow 0.1s, border 0.1s",
-                            boxShadow: isHovered ? "0 4px 16px rgba(0, 123, 255, 0.3)" : undefined,
-                            border: isHovered ? "2px solid #007bff" : "2px solid transparent",
-                            borderRadius: "8px",
-                            cursor: "pointer"
-                          }}
-                          onMouseEnter={() => setHoveredCardIdx(idx)}
-                          onMouseLeave={() => setHoveredCardIdx(null)}
-                        >
-                          <CardComponent  />
-                        </div>
-                      ) : (
-                        <span key={idx}>Unknown Card...</span>
-                      );
-                    })}
-                  </div>
+                  <PlayerHand 
+                    hand={hand}
+                    setHand={setHand}
+                    hoveredIdx={hoverdCardIdx}
+                    setHoveredIdx={setHoveredCardIdx}
+                  />
                 )}
               </div>
             ))}
@@ -148,42 +128,9 @@ export default function GameRoom({ token }) {
               zIndex: 1000
             }}>
               <span style={{ marginRight: "12px"}}>Face up card:</span>
-              {gameState.FaceUpCard && (() => {
-                const cardKey = suitRankMap[gameState.FaceUpCard.Rank + gameState.FaceUpCard.Suit];
-                const CardComponent = deck[cardKey];
-                return CardComponent ? (
-                  <CardComponent />
-                ) : (
-                  <span>Unknown Card...</span>
-                );
-              })()}
+              <FaceUpCard card={gameState.FaceUpCard} />
               {gameState.DeckCount > 0 && (
-                <div
-                  style={{
-                    position: "relative",
-                    width: `${CARD_WIDTH}px`,
-                    height: `${CARD_HEIGHT}px`,
-                    marginLeft: "24px",
-                  }}
-                >
-                  {Array.from({ length: Math.min(gameState.DeckCount, 10) }).map((_, i) => {
-                    const BackCard = deck["B2"];
-                    return BackCard ? (
-                      <div
-                        key={i}
-                        style={{
-                          position: "absolute",
-                          top: `${(10 - Math.min(gameState.DeckCount, 10) + i) * 4}px`,
-                          left: 0,
-                          zIndex: i,
-                          opacity: 1 - (0.05 * (Math.min(gameState.DeckCount, 10) - i - 1)),
-                        }}
-                      >
-                        <BackCard />
-                      </div>
-                    ) : null;
-                  })}
-                </div>
+                <DeckStack deckCount={gameState.DeckCount} />
               )}
             </div>
           </div>

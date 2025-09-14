@@ -13,6 +13,8 @@
     "@letele/playing-cards": "^0.1.0",
     "axios": "^1.11.0",
     "react": "^19.1.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.8.2"
   },
