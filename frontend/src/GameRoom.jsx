@@ -5,7 +5,8 @@ import { useDrag, useDrop } from "react-dnd";
 import PlayerHand from "./components/PlayerHand";
 import DeckStack from "./components/DeckStack";
 import FaceUpCard from "./components/FaceUpCard";
-import { CARD_HEIGHT } from "./cardUtils";
+import OpponentSeat from "./components/OpponentSeat";
+import { CARD_WIDTH, CARD_HEIGHT } from "./cardUtils";
 
 export default function GameRoom({ token }) {
   const { id } = useParams(); // room ID from URL
@@ -14,9 +15,56 @@ export default function GameRoom({ token }) {
   const [gameStarted, setGameStarted] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [hoverdCardIdx, setHoveredCardIdx] = useState(null);
+  const [hoveredCardIdx, setHoveredCardIdx] = useState(null);
   const [hand, setHand] = useState([]);
   const [selectedIds, setSelectedIds] = useState(new Set());
+
+  const tableStyle = {
+    position: "relative",
+    width: "min(1100px, 92vw)",   // wide but leaves padding on sides
+    height: "72vh",               // good portion of the viewport height
+    margin: "24px auto",          // center on the page
+    borderRadius: 12,
+    background:
+      "radial-gradient(circle at 50% 40%, #1e7f52 0%, #0f5f3e 50%, #0b3f2a 100%)",
+    boxShadow: "inset 0 0 80px rgba(0,0,0,0.35)",
+    overflow: "visible",
+    zIndex: 1,
+  };
+  const centerAreaStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 16,
+    zIndex: 5,
+    width: CARD_WIDTH * 0.5,
+    height: CARD_HEIGHT * 0.5,
+  };
+  const topOpponentsStyle = {
+    position: "absolute",
+    top: 24,
+    left: "50%",
+    transform: "translateX(-50%)",
+    display: "flex",
+    gap: 32,
+    alignItems: "center",
+    zIndex: 5,
+  };
+  const bottomHandStyle = {
+    position: "fixed",
+    left: "50%",
+    bottom: 16,
+    transform: "translateX(-50%)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 8,
+    zIndex: 10,
+  };
+  const actionsStyle = { display: "flex", gap: 8 };
 
   // Clear card selections when the hand changes
   useEffect(() => {
@@ -116,6 +164,10 @@ export default function GameRoom({ token }) {
   if (error) return <div style={{ color: "red" }}>{error}</div>;
   if (!room) return <div>Loading Room...</div>;
 
+  const players = gameState?.Players ?? [];
+  const me = players.find(p => p.Hand);
+  const opponents = players.filter(p => !p.Hand);
+
   return (
     <div onClick={() => setSelectedIds(new Set())}>
       <h2>Game Room: {room.name}</h2>
@@ -134,49 +186,39 @@ export default function GameRoom({ token }) {
       )}
       {/* Show game state if started */}
       {gameStarted && gameState && (
-        <div>
-          <h3>Game Started!</h3>
-          <ul>
-            {gameState.Players.map((player, idx) => (
-              <div key={idx} style={{ marginBottom: "32px" }}>
-                {player.Name} (Cards: {player.HandCount})
-                {player.Hand && (
-                  <PlayerHand 
-                    hand={hand}
-                    setHand={setHand}
-                    hoveredIdx={hoverdCardIdx}
-                    setHoveredIdx={setHoveredCardIdx}
-                    selectedIds={selectedIds}
-                    onToggleSelect={toggleSelectById}
-                  />
-                )}
+        <div onClick={() => setSelectedIds(new Set())}>
+          <div style={tableStyle}>
+            <div style={topOpponentsStyle}>
+              {opponents.map((p, i) => (
+                <OpponentSeat key={i} name={p.Name} handCount={p.HandCount} />
+              ))}
+            </div>
+
+            <div style={centerAreaStyle}>
+              <div>
+                <FaceUpCard card={gameState.FaceUpCard} />
               </div>
-            ))}
-          </ul>
-          {selectedIds.size > 0 && (
-            <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
-              <button onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set()); }}>
-                Deselect All
-              </button>
-              <button onClick={(e) => { e.stopPropagation(); handlePlaySelected(); }}>
-                Play Selected ({selectedIds.size})
-              </button>
+              <div>
+                {gameState.DeckCount > 0 && <DeckStack deckCount={gameState.DeckCount} />}
+              </div>
             </div>
-          )}
-          <div style={{ marginTop: `${CARD_HEIGHT}px` }}>
-            <div style={{ 
-              display: "flex",
-              justifyContent: "left",
-              alignItems: "left",
-              position: "relative",
-              zIndex: 1000
-            }}>
-              <span style={{ marginRight: "12px"}}>Face up card:</span>
-              <FaceUpCard card={gameState.FaceUpCard} />
-              {gameState.DeckCount > 0 && (
-                <DeckStack deckCount={gameState.DeckCount} />
-              )}
-            </div>
+          </div>
+
+          <div style={bottomHandStyle} onClick={(e) => e.stopPropagation()}>
+            <PlayerHand
+              hand={hand}
+              setHand={setHand}
+              hoveredIdx={hoveredCardIdx}
+              setHoveredIdx={setHoveredCardIdx}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelectById}
+            />
+            {selectedIds.size > 0 && (
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={() => setSelectedIds(new Set())}>Deselect All</button>
+                <button onClick={handlePlaySelected}>Play Selected ({selectedIds.size})</button>
+              </div>
+            )}
           </div>
         </div>
       )}
