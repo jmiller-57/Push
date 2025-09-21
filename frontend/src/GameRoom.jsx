@@ -21,8 +21,8 @@ export default function GameRoom({ token }) {
 
   const tableStyle = {
     position: "relative",
-    width: "min(1100px, 92vw)",   // wide but leaves padding on sides
-    height: "72vh",               // good portion of the viewport height
+    width: "min(1100px, 92vw)",
+    height: "72vh",
     margin: "24px auto",          // center on the page
     borderRadius: 12,
     background:
@@ -40,15 +40,14 @@ export default function GameRoom({ token }) {
     alignItems: "flex-start",
     gap: 16,
     zIndex: 5,
-    width: CARD_WIDTH * 0.5,
-    height: CARD_HEIGHT * 0.5,
+    margin: "20px auto"
   };
   const topOpponentsStyle = {
-    position: "absolute",
+    height: `${CARD_HEIGHT * 2}px`,
+    position: "relative",
     top: 24,
-    left: "50%",
-    transform: "translateX(-50%)",
     display: "flex",
+    justifyContent: "center",
     gap: 32,
     alignItems: "center",
     zIndex: 5,
@@ -169,15 +168,10 @@ export default function GameRoom({ token }) {
   const opponents = players.filter(p => !p.Hand);
 
   return (
-    <div onClick={() => setSelectedIds(new Set())}>
-      <h2>Game Room: {room.name}</h2>
-      <p>Creator: {room.creator}</p>
-      <h3>Members:</h3>
-      <ul>
-        {room.members.map(member => (
-          <div key={member.id}>{member.username}</div>
-        ))}
-      </ul>
+    <div id="gameroom" onClick={() => setSelectedIds(new Set())}>
+      <div id="header">
+        <h1 style={{ display: "inline", textAlign: "left" }}>Game Room: {room.name}</h1>
+      </div>
       {/* Show start game button if at least 2 members and game not started */}
       {!gameStarted && room.members.length >= 2 && (
         <button onClick={handleStartGame} disabled={loading}>
@@ -186,35 +180,42 @@ export default function GameRoom({ token }) {
       )}
       {/* Show game state if started */}
       {gameStarted && gameState && (
-        <div onClick={() => setSelectedIds(new Set())}>
-          <div style={tableStyle}>
-            <div style={topOpponentsStyle}>
+        <div id="tablespace" onClick={() => setSelectedIds(new Set())}>
+          <div id="table" style={tableStyle}>
+            <div id="opponent" style={topOpponentsStyle}>
               {opponents.map((p, i) => (
                 <OpponentSeat key={i} name={p.Name} handCount={p.HandCount} />
               ))}
             </div>
 
-            <div style={centerAreaStyle}>
-              <div>
+            <div id="centerarea" style={centerAreaStyle}>
+              <div id="faceupcard" style={{ paddingRight: "20px", paddingBottom: "20px" }}>
                 <FaceUpCard card={gameState.FaceUpCard} />
               </div>
-              <div>
+              <div id="deck">
                 {gameState.DeckCount > 0 && <DeckStack deckCount={gameState.DeckCount} />}
               </div>
             </div>
           </div>
 
-          <div style={bottomHandStyle} onClick={(e) => e.stopPropagation()}>
-            <PlayerHand
-              hand={hand}
-              setHand={setHand}
-              hoveredIdx={hoveredCardIdx}
-              setHoveredIdx={setHoveredCardIdx}
-              selectedIds={selectedIds}
-              onToggleSelect={toggleSelectById}
-            />
+          <div id="playerhand" style={bottomHandStyle} onClick={(e) => e.stopPropagation()}>
+            <div 
+              id="hand"
+              style={{
+                transformOrigin: "bottom center",
+              }}
+            >
+              <PlayerHand
+                hand={hand}
+                setHand={setHand}
+                hoveredIdx={hoveredCardIdx}
+                setHoveredIdx={setHoveredCardIdx}
+                selectedIds={selectedIds}
+                onToggleSelect={toggleSelectById}
+              />
+            </div>
             {selectedIds.size > 0 && (
-              <div style={{ display: "flex", gap: 8 }}>
+              <div id="actionbuttons" style={{ display: "flex", gap: 8 }}>
                 <button onClick={() => setSelectedIds(new Set())}>Deselect All</button>
                 <button onClick={handlePlaySelected}>Play Selected ({selectedIds.size})</button>
               </div>
