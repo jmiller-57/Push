@@ -1,5 +1,7 @@
 package deck
 
+import "github.com/google/uuid"
+
 type Suit string
 type Rank string
 
@@ -29,16 +31,18 @@ const (
 )
 
 type Card struct {
-	Rank           Rank
-	Suit           Suit
-	Points         int8
+	ID     string
+	Rank   Rank
+	Suit   Suit
+	Points int8
 }
 
 func NewCard(suit Suit, rank Rank) Card {
 	return Card{
-		Suit:           suit,
-		Rank:           rank,
-		Points:         pointsFromRank(rank),
+		ID:     uuid.NewString(),
+		Suit:   suit,
+		Rank:   rank,
+		Points: pointsFromRank(rank),
 	}
 }
 

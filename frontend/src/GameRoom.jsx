@@ -16,6 +16,12 @@ export default function GameRoom({ token }) {
   const [loading, setLoading] = useState(false);
   const [hoverdCardIdx, setHoveredCardIdx] = useState(null);
   const [hand, setHand] = useState([]);
+  const [selectedIds, setSelectedIds] = useState(new Set());
+
+  // Clear card selections when the hand changes
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [hand]);
 
   // Fetch room details
   useEffect(() => {
@@ -40,6 +46,32 @@ export default function GameRoom({ token }) {
       if (me) setHand(me.Hand);
     }
   }, [gameState]);
+
+  const toggleSelectById = (cardId) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(cardId) ? next.delete(cardId) : next.add(cardId);
+      return next;
+    });
+  };
+
+  const handlePlaySelected = async () => {
+    if (selectedIds.size === 0) return;
+
+    const cardIds = Array.from(selectedIds);
+    try {
+      await axios.post(
+        `http://localhost:8080/api/lobby/rooms/${id}/play`,
+        { cardIds },
+        { headers: {Authorization: "Bearer " + token } }
+      );
+
+      setHand(prev => prev.filter(c => !selectedIds.has(c.ID || c.id)));
+      setSelectedIds(new Set());
+    } catch (err) {
+      setError("Failed to play selected cards: " + (err.response?.data || err.message));
+    }
+  };
 
   // Fetch game state on mount and after starting
   const fetchGameState = () => {
@@ -85,7 +117,7 @@ export default function GameRoom({ token }) {
   if (!room) return <div>Loading Room...</div>;
 
   return (
-    <div>
+    <div onClick={() => setSelectedIds(new Set())}>
       <h2>Game Room: {room.name}</h2>
       <p>Creator: {room.creator}</p>
       <h3>Members:</h3>
@@ -114,11 +146,23 @@ export default function GameRoom({ token }) {
                     setHand={setHand}
                     hoveredIdx={hoverdCardIdx}
                     setHoveredIdx={setHoveredCardIdx}
+                    selectedIds={selectedIds}
+                    onToggleSelect={toggleSelectById}
                   />
                 )}
               </div>
             ))}
           </ul>
+          {selectedIds.size > 0 && (
+            <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+              <button onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set()); }}>
+                Deselect All
+              </button>
+              <button onClick={(e) => { e.stopPropagation(); handlePlaySelected(); }}>
+                Play Selected ({selectedIds.size})
+              </button>
+            </div>
+          )}
           <div style={{ marginTop: `${CARD_HEIGHT}px` }}>
             <div style={{ 
               display: "flex",

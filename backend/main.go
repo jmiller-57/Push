@@ -38,6 +38,7 @@ func main() {
 	r.Handle("/api/lobby/rooms/{id}", handlers.JWTAuthMiddleware(http.HandlerFunc(roomHandler.RoomDetails))).Methods("GET")
 	r.Handle("/api/lobby/rooms/{id}/start", handlers.JWTAuthMiddleware(http.HandlerFunc(gameHandler.StartGame))).Methods("POST")
 	r.Handle("/api/lobby/rooms/{id}/game", handlers.JWTAuthMiddleware(http.HandlerFunc(gameHandler.GetGameState))).Methods("GET")
+	r.Handle("/api/lobby/rooms/{id}/play", handlers.JWTAuthMiddleware(http.HandlerFunc(gameHandler.PlayCards))).Methods("POST")
 
 	log.Println("Server started listening at :8080")
 	log.Fatal(http.ListenAndServe(":8080", withCORS(r)))

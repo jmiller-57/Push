@@ -2,7 +2,15 @@ import React from "react";
 import Card from "./Card";
 import { CARD_HEIGHT } from "../cardUtils";
 
-export default function PlayerHand({ hand, setHand, hoveredIdx, setHoveredIdx}) {
+export default function PlayerHand({ 
+  hand,
+  setHand,
+  hoveredIdx,
+  setHoveredIdx,
+  selectedIds,
+  onToggleSelect,
+}) {
+
   const moveCard = (from, to) => {
     const updated = [...hand];
     const [moved] = updated.splice(from, 1);
@@ -10,8 +18,11 @@ export default function PlayerHand({ hand, setHand, hoveredIdx, setHoveredIdx}) 
     setHand(updated);
   };
 
+  const getCardId = (c) => c.ID ?? c.id;
+
   return (
     <div
+      onClick={(e) => e.stopPropagation()}
       style={{
         display: "flex",
         alignItems: "center",
@@ -20,16 +31,22 @@ export default function PlayerHand({ hand, setHand, hoveredIdx, setHoveredIdx}) 
         position: "relative",
       }}
     >
-      {hand.map((card, idx) => (
-        <Card
-          key={idx}
-          card={card}
-          idx={idx}
-          moveCard={moveCard}
-          isHovered={hoveredIdx === idx}
-          setHoveredIdx={setHoveredIdx}
-        />
-      ))}
+      {hand.map((card, idx) => {
+        const cardId = getCardId(card);
+        const isSelected = selectedIds?.has(cardId);
+        return ( 
+          <Card
+            key={cardId || idx}
+            card={card}
+            idx={idx}
+            moveCard={moveCard}
+            isHovered={hoveredIdx === idx}
+            setHoveredIdx={setHoveredIdx}
+            isSelected={!!isSelected}
+            onToggleSelect={() => onToggleSelect(cardId)}
+          />
+        );
+      })}
     </div>
   );
 }

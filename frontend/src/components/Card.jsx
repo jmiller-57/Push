@@ -11,14 +11,16 @@ export default function Card({
   moveCard,
   isHovered,
   setHoveredIdx,
-  style={},
+  isSelected = false,
+  onToggleSelect
 }) {
   const ref = useRef(null);
+  const isDraggable = !!moveCard;
 
   const [, drag] = useDrag({
     type: ItemType,
     item: { idx },
-    canDrag: !!moveCard,
+    canDrag: isDraggable,
   });
 
   const [, drop] = useDrop({
@@ -29,29 +31,52 @@ export default function Card({
         item.idx = idx;
       }
     },
-    canDrop: () => !!moveCard,
+    canDrop: () => isDraggable,
   });
 
-  if (moveCard) drag(drop(ref));
+  if (isDraggable) drag(drop(ref));
 
   const cardKey = suitRankMap[card.Rank + card.Suit];
   const Card = deck[cardKey]
 
+  const style = {
+    marginLeft: idx === 0 ? 0 : `-${CARD_OVERLAP}px`,
+    position: "relative",
+    flexShrink: 0,
+    cursor: isDraggable ? "grab" : "pointer",
+    // Keep selected card on top, then hovered, then natural stacking by idx
+    zIndex: isSelected ? 1002 : isHovered ? 1001 : idx,
+    // Lift the selected card to indicate selection
+    transform: isSelected ? "translateY(-24px)" : "translateY(0)",
+    transition: "transform 120ms ease, box-shadow 120ms ease, border 120ms ease, z-index 60ms ease",
+    // Visual affordances for hover/selected
+    boxShadow: isSelected
+      ? "0 6px 14px rgba(0,0,0,0.25)"
+      : isHovered
+      ? "0 4px 16px rgba(0, 123, 255, 0.3)"
+      : undefined,
+    border: isSelected
+      ? "2px solid #28a745"          // green when selected
+      : isHovered
+      ? "2px solid #007bff"          // blue on hover
+      : "2px solid transparent",
+    borderRadius: "8px",
+  };
+
   return Card ? (
     <div
       ref={ref}
-      style={{
-        marginLeft: idx === 0 ? 0 : `-${CARD_OVERLAP}px`,
-        zIndex: isHovered ? 100 : idx,
-        position: "relative",
-        flexShrink: 0,
-        transition: "z-index 0.1s, box-shadow 0.1s, border 0.1s",
-        boxShadow: isHovered ? "0 4px 16px rgba(0, 123, 255, 0.3)" : undefined,
-        border: isHovered ? "2px solid #007bff" : "2px solid transparent",
-        borderRadius: "8px",
-        cursor: moveCard ? "grab" : "default",
-        ...style,
+      style={style}
+      onClick={(e) => { e.stopPropagation(); onToggleSelect?.(); }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggleSelect?.();
+        }
       }}
+      role="button"
+      tabIndex={0}
+      aria-pressed={isSelected}
       onMouseEnter={() => setHoveredIdx(idx)}
       onMouseLeave={() => setHoveredIdx(null)}
     >

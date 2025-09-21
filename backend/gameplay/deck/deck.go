@@ -3,7 +3,6 @@ package deck
 import (
 	"math/rand"
 	"time"
-	//"fmt"
 )
 
 type Deck []Card
@@ -23,7 +22,6 @@ func NewDeck() Deck {
 				deck = append(deck, NewCard(suit, rank))
 				deck = append(deck, NewCard(suit, rank))
 			} else {
-				//fmt.Printf("joker: rank=%v, suit=%v", rank, suit)
 				deck = append(deck, NewCard(AnySuit, rank))
 			}
 		}
