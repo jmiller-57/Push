@@ -24,7 +24,6 @@ export default function DeckStack({ deckCount }) {
             top: `${(visibleCount - i - 1) * STEP}px`,
             left: 0,
             zIndex: i,
-            opacity: 1 - (0.05 * (visibleCount - i - 1))
           }}
         >
           <BackCard />

@@ -1,6 +1,6 @@
-export const CARD_WIDTH = 60; // px
-export const CARD_HEIGHT = 90; // px
-export const CARD_OVERLAP = CARD_WIDTH * 3.4;
+export const CARD_WIDTH = 240; // px
+export const CARD_HEIGHT = 336; // px
+export const CARD_OVERLAP = CARD_WIDTH * .89;
 
 export const suitRankMap = {
   "A♠": "Sa",

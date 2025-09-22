@@ -42,7 +42,6 @@ export default function Card({
   const style = {
     marginLeft: idx === 0 ? 0 : `-${CARD_OVERLAP}px`,
     position: "relative",
-    flexShrink: 0,
     cursor: isDraggable ? "grab" : "pointer",
     // Keep selected card on top, then hovered, then natural stacking by idx
     zIndex: isSelected ? 1002 : isHovered ? 1001 : idx,

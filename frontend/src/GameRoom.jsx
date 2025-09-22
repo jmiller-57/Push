@@ -37,13 +37,10 @@ export default function GameRoom({ token }) {
     left: "50%",
     transform: "translate(-50%, -50%)",
     display: "flex",
-    alignItems: "flex-start",
-    gap: 16,
-    zIndex: 5,
-    margin: "20px auto"
+    width: `${CARD_WIDTH} + 20px`
   };
   const topOpponentsStyle = {
-    height: `${CARD_HEIGHT * 2}px`,
+    height: `${CARD_HEIGHT / 2}px`,
     position: "relative",
     top: 24,
     display: "flex",
@@ -189,10 +186,17 @@ export default function GameRoom({ token }) {
             </div>
 
             <div id="centerarea" style={centerAreaStyle}>
-              <div id="faceupcard" style={{ paddingRight: "20px", paddingBottom: "20px" }}>
+              <div id="faceup_card_div" style={{ 
+                transform: "scale(0.5)",
+                height: `${CARD_HEIGHT * 0.5}px`, 
+                width: `${CARD_WIDTH * 0.5}px`,
+              }}>
                 <FaceUpCard card={gameState.FaceUpCard} />
               </div>
-              <div id="deck">
+              <div id="deck_div" style={{ 
+                height: `${CARD_HEIGHT * 0.5}px`, 
+                width: `${CARD_WIDTH * 0.5}px`,
+              }}>
                 {gameState.DeckCount > 0 && <DeckStack deckCount={gameState.DeckCount} />}
               </div>
             </div>
