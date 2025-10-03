@@ -5,7 +5,7 @@ import { CARD_WIDTH, CARD_HEIGHT } from "../cardUtils";
 export default function DeckStack({ deckCount }) {
   const BackCard = deck["B2"];
   const visibleCount = Math.min(deckCount, 10);
-  const STEP = 8;
+  const STEP = 4;
 
   return (
     <div
@@ -21,9 +21,10 @@ export default function DeckStack({ deckCount }) {
           key={i}
           style={{
             position: "absolute",
-            top: `${(visibleCount - i - 1) * STEP}px`,
+            bottom: `${i * STEP}px`,
             left: 0,
             zIndex: i,
+            lineHeight: 0
           }}
         >
           <BackCard />

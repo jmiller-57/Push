@@ -37,7 +37,7 @@ export default function GameRoom({ token }) {
     left: "50%",
     transform: "translate(-50%, -50%)",
     display: "flex",
-    alignItems: "flex-start",
+    alignItems: "flex-end",
     justifyContent: "center",
     gap: 12,
   };
@@ -161,9 +161,10 @@ export default function GameRoom({ token }) {
     }
   };
 
-  function ScaleBox({ scale = 0.5, children }) {
+  function ScaleBox({ id, scale = 0.5, children }) {
     return (
       <div
+        id={`${id}`}
         style={{
           width: CARD_WIDTH * scale,
           height: CARD_HEIGHT * scale,
@@ -216,12 +217,12 @@ export default function GameRoom({ token }) {
             </div>
 
             <div id="centerarea" style={centerAreaStyle}>
-              <ScaleBox scale={CENTER_SCALE}>
+              <ScaleBox id={"faceupcard"} scale={CENTER_SCALE}>
                 <FaceUpCard card={gameState.FaceUpCard} />
               </ScaleBox>
               
               {gameState.DeckCount > 0 && (
-                <ScaleBox scale={CENTER_SCALE}>
+                <ScaleBox id={"deckstack"} scale={CENTER_SCALE}>
                   <DeckStack deckCount={gameState.DeckCount} />
                 </ScaleBox>
               )}
