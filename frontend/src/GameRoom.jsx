@@ -37,7 +37,9 @@ export default function GameRoom({ token }) {
     left: "50%",
     transform: "translate(-50%, -50%)",
     display: "flex",
-    width: `${CARD_WIDTH} + 20px`
+    alignItems: "flex-start",
+    justifyContent: "center",
+    gap: 12,
   };
   const topOpponentsStyle = {
     height: `${CARD_HEIGHT / 2}px`,
@@ -61,6 +63,8 @@ export default function GameRoom({ token }) {
     zIndex: 10,
   };
   const actionsStyle = { display: "flex", gap: 8 };
+
+  const CENTER_SCALE = 0.5;
 
   // Clear card selections when the hand changes
   useEffect(() => {
@@ -157,6 +161,32 @@ export default function GameRoom({ token }) {
     }
   };
 
+  function ScaleBox({ scale = 0.5, children }) {
+    return (
+      <div
+        style={{
+          width: CARD_WIDTH * scale,
+          height: CARD_HEIGHT * scale,
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: CARD_WIDTH,
+            height: CARD_HEIGHT,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+          }}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <div style={{ color: "red" }}>{error}</div>;
   if (!room) return <div>Loading Room...</div>;
 
@@ -186,19 +216,15 @@ export default function GameRoom({ token }) {
             </div>
 
             <div id="centerarea" style={centerAreaStyle}>
-              <div id="faceup_card_div" style={{ 
-                transform: "scale(0.5)",
-                height: `${CARD_HEIGHT * 0.5}px`, 
-                width: `${CARD_WIDTH * 0.5}px`,
-              }}>
+              <ScaleBox scale={CENTER_SCALE}>
                 <FaceUpCard card={gameState.FaceUpCard} />
-              </div>
-              <div id="deck_div" style={{ 
-                height: `${CARD_HEIGHT * 0.5}px`, 
-                width: `${CARD_WIDTH * 0.5}px`,
-              }}>
-                {gameState.DeckCount > 0 && <DeckStack deckCount={gameState.DeckCount} />}
-              </div>
+              </ScaleBox>
+              
+              {gameState.DeckCount > 0 && (
+                <ScaleBox scale={CENTER_SCALE}>
+                  <DeckStack deckCount={gameState.DeckCount} />
+                </ScaleBox>
+              )}
             </div>
           </div>
 
@@ -230,4 +256,3 @@ export default function GameRoom({ token }) {
     </div>
   );
 }
-// TODO: Fix other players being hidden behind "my" cards
